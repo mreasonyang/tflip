@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { createElement, useRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { play, sample } from '@tflip/motion';
-import { Motion, useMotion } from '@tflip/motion/react';
-import { createParticles } from '@tflip/motion/effects';
+import { play, sample } from '@kyun.si/tflip';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
+import { createParticles } from '@kyun.si/tflip/effects';
 
 assert.equal(typeof document, 'undefined');
 function Consumer() {

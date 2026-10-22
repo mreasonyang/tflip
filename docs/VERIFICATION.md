@@ -1,4 +1,4 @@
-# Tflip 0.3.1 验证与支持范围
+# Tflip 0.3.2 验证与支持范围
 
 验收对象是网站分发的精确 SDK/示例/Skill 字节及其对应源码 revision。历史 0.3.0 回执保留原样，不冒充本版本证据。
 
@@ -32,7 +32,13 @@ SDK 为浏览器 ESM，React 适配器声明支持 React 18/19，core 和 SSR �
 
 首次接入应执行 [宿主验收](../agent/references/verification.md)，尤其是滚动/尺寸变化策略、业务元素归属、焦点和卸载清理。问题可提交到 [GitHub Issues](https://github.com/mreasonyang/tflip/issues)，附版本、浏览器、最小复现与脱敏日志，不上传凭据。
 
-## 本次结果
+## 0.3.2 本地结果
+
+2026-10-23，Node 26.11.0 完成 174 项单元/类型/归档检查及 127 项 Brave、Playwright WebKit 浏览器检查，全部通过、零跳过。独立项目从 `kyun.si-tflip-0.3.2.tgz` 安装 `@kyun.si/tflip`，所有导出入口、消费者 TypeScript、SSR、Vanilla 与 React StrictMode 宿主通过。所测 SDK SHA-256 为 `f856dceaf0e2c969d839c006f57b34ebb11242dc2676e76213523626db88798a`。
+
+`npm run publish:npm -- --dry-run` 通过，确认公开发布的对象是相同规范 SDK，包内没有 `private` 或生命周期脚本。本次本机 npm 尚未登录；registry 上该版本返回 404，实际 npm 发布、registry 安装及线上网站部署尚未完成。本地通过不替代这些步骤。
+
+## 0.3.1 历史结果
 
 2026-10-22，本机 Node 26.11.0 完成 173 项单元/类型/归档检查及 126 项浏览器检查，全部通过、零跳过。浏览器为 Brave Chromium 154.0.8037.98 和 Playwright WebKit 27.2。独立消费者安装、TypeScript、SSR 和两种浏览器宿主均通过；SDK 另在 Node 20.20.2 无 document/window 的环境中通过 SSR 导入和 React 服务端渲染。所测 SDK SHA-256 为 `5680a9afcd307a6ab270e33d54006429629545efb4040cfe5f0a4847734d9571`。
 

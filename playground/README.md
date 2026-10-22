@@ -20,7 +20,7 @@
 
 ## Agent 接入
 
-页面的“让 Agent 接入”提供当前参数 JSON、按需读取的 recipe、SDK、独立示例和 Skill 包。入口见 [agent/index.md](../agent/index.md)，构建生成 [catalog.json](../agent/catalog.json) 中的版本与 SHA-256。当前 SDK 为 `@tflip/motion`，仅供本地预览，未发布 npm。
+页面的“让 Agent 接入”提供当前参数 JSON、按需读取的 recipe、SDK、独立示例和 Skill 包。入口见 [agent/index.md](../agent/index.md)，构建生成 [catalog.json](../agent/catalog.json) 中的版本与 SHA-256。当前 SDK 为 `@kyun.si/tflip`，npm 发布完成前使用 catalog 中的归档；本地构建不确认 registry 可安装性。
 
 新示例导出 `mountStunt()`；旧 `mountRoadster()` / `mountRamp()` 作为兼容别名。旧 recipe 地址和配置 id 有明确迁移说明。旧数据属性保留为兼容别名，新代码使用 `data-tflip-*`。
 

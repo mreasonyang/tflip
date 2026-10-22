@@ -1,6 +1,6 @@
 # Tflip
 
-Portable motion SDK and reusable visual demos. MIT licensed; download the versioned SDK from the catalog (not published to npm).
+Portable motion SDK and reusable visual demos. MIT licensed. npm package: @kyun.si/tflip. Check catalog publication status; download the exact SDK archive for unpublished versions.
 
 - [Start here](./agent/index.md): choose one integration recipe.
 - [Version and downloads](./agent/catalog.json): relative artifact paths and SHA-256 digests.

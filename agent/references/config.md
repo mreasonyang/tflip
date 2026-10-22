@@ -5,7 +5,7 @@ Exports are JSON data, not executable SDK options. Validate against [configurati
 ```json
 {
   "schemaVersion": 1,
-  "sdkVersion": "0.3.1",
+  "sdkVersion": "0.3.2",
   "demo": "lab",
   "framework": "auto",
   "config": {
@@ -22,9 +22,9 @@ Exports are JSON data, not executable SDK options. Validate against [configurati
 
 ## Explicit migration from earlier SDK versions
 
-The schema recognizes current `sdkVersion: "0.3.1"` and legacy `"0.1.0"` / `"0.2.0"` / `"0.2.1"` / `"0.3.0"`; recognition does not authorize executing old data with a different runtime. Reject unknown schema/SDK versions. For an intended upgrade, preserve the original export, validate it, then create a new copy with `sdkVersion` set to the current catalog version and `demo` mapped through `catalog.aliases`. `roadster` and `ramp` become `stunt`; other IDs and allowed configuration fields remain unchanged. Explain that both old vehicle IDs now select the full two-shot edit: ramp action, cut at 8 seconds, then car-flight action. Validate the new copy again and bind it to the matching current artifacts.
+The schema recognizes current `sdkVersion: "0.3.2"` and legacy `"0.1.0"` / `"0.2.0"` / `"0.2.1"` / `"0.3.0"` / `"0.3.1"`; recognition does not authorize executing old data with a different runtime. Reject unknown schema/SDK versions. For an intended upgrade, preserve the original export, validate it, then create a new copy with `sdkVersion` set to the current catalog version and `demo` mapped through `catalog.aliases`. `roadster` and `ramp` become `stunt`; other IDs and allowed configuration fields remain unchanged. Explain that both old vehicle IDs now select the full two-shot edit: ramp action, cut at 8 seconds, then car-flight action. Validate the new copy again and bind it to the matching current artifacts.
 
-The envelope shape stays at `schemaVersion: 1`; the SDK package version and catalog content revision identify the changed implementation. A current v0.3.1 envelope may still contain a legacy ID: canonicalize the ID before selecting its recipe, rather than treating it as an additional demo. This is an explicit adapter workflow, not an SDK `play()` feature.
+The envelope shape stays at `schemaVersion: 1`; the SDK package version and catalog content revision identify the changed implementation. A current v0.3.2 envelope may still contain a legacy ID: canonicalize the ID before selecting its recipe, rather than treating it as an additional demo. This is an explicit adapter workflow, not an SDK `play()` feature.
 
 ## lab
 
@@ -39,8 +39,8 @@ The envelope shape stays at `schemaVersion: 1`; the SDK package version and cata
 Minimal explicit mapping after parsing JSON and checking its shape:
 
 ```js
-import { play } from '@tflip/motion/dom';
-import { createParticles } from '@tflip/motion/effects';
+import { play } from '@kyun.si/tflip/dom';
+import { createParticles } from '@kyun.si/tflip/effects';
 
 export function playLab(data, { sdkVersion, root = document, makeVisual, clip }) {
   if (data.schemaVersion !== 1 || data.sdkVersion !== sdkVersion || data.demo !== 'lab') {
@@ -91,7 +91,7 @@ The host supplies the installed `sdkVersion`, application-scoped `root`, and tra
 ```json
 {
   "schemaVersion": 1,
-  "sdkVersion": "0.3.1",
+  "sdkVersion": "0.3.2",
   "demo": "stunt",
   "framework": "auto",
   "config": { "jet": true, "speed": 1 }

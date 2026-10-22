@@ -9,7 +9,7 @@ export function createCodeExample({ mode, motion, anchors, size, effects }, t) {
   const transfer = mode === 'transfer';
   const points = anchors.kind === 'viewport';
   const useEffects = effects.jet || effects.trail;
-  const imports = `import { play, sequence } from '@tflip/motion/dom';${useEffects ? "\nimport { createParticles } from '@tflip/motion/effects';" : ''}`;
+  const imports = `import { play, sequence } from '@kyun.si/tflip/dom';${useEffects ? "\nimport { createParticles } from '@kyun.si/tflip/effects';" : ''}`;
   const bindings = transfer && !points
     ? `${bindElement('source', anchors.from)}\n${bindElement('target', anchors.to)}`
     : bindElement('wrapper', anchors.wrapper, true);

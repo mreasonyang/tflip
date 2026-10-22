@@ -1,8 +1,8 @@
 # Tflip 0.3.0 全面命名统一
 
-0.3.0 将项目名称统一为 Tflip，包名为 `@tflip/motion`，站点为 https://tflip.kyun.si 。
+0.3.0 将项目名称统一为 Tflip，包名为 `@tflip/motion`，站点为 https://tflip.kyun.si 。0.3.2 起，npm 安装名是 `@kyun.si/tflip`。下表是 0.3.0 发布时的名称。
 
-## 当前名称
+## 0.3.0 当时的名称
 
 | 范围 | 名称 |
 | --- | --- |

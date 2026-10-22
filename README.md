@@ -2,9 +2,23 @@
 
 框架无关的翻滚、起跳与落地动效。以 TypeScript 编写，提供纯轨迹计算、CSS 3D 呈现、可选 Canvas 粒子和 React 薄适配。
 
-当前版本为 **0.3.1**，项目目录为 `tflip/`。在线演示：https://tflip.kyun.si 。命名与升级说明见 [Tflip 全面命名统一](docs/TFLIP_UPDATE.md)。
+当前版本为 **0.3.2**，项目目录为 `tflip/`。在线演示：https://tflip.kyun.si 。命名与升级说明见 [Tflip 全面命名统一](docs/TFLIP_UPDATE.md)。
 
 这是独立组件实现。本项目的动画完成只表示视觉生命周期结束，不代表业务任务成功。
+
+## 安装
+
+npm 包名为 `@kyun.si/tflip`。版本发布到 npm 后，在自己的项目中运行：
+
+```sh
+npm install @kyun.si/tflip
+```
+
+```ts
+import { play } from '@kyun.si/tflip';
+```
+
+当前 0.3.2 尚待 npm 账号授权后发布，不能把本地打包成功当作 npm 已上线。现在也可下载 catalog 中的 SDK，运行 `npm install --ignore-scripts ./kyun.si-tflip-0.3.2.tgz`；安装后的导入名相同。React 入口为 `@kyun.si/tflip/react`，无需单独安装另一个 Tflip 包。
 
 ## 本地运行
 
@@ -39,15 +53,15 @@ npm run pack:local
 
 | 入口 | 内容 | 浏览器依赖 |
 | --- | --- | --- |
-| `@tflip/motion/core` | `normalizeOptions`、`sample` / `stateAt`、`presets` | 无，纯数学、可在服务端调用 |
-| `@tflip/motion/dom` | `play`、`createAnimator`、`sequence`、`wrap` | 调用时需要 DOM；导入安全 |
-| `@tflip/motion/effects` | `createParticles` | 创建效果实例时需要 Canvas 2D |
-| `@tflip/motion/react` | `Motion`、`useMotion` | 可选 React peer，SSR 可导入和渲染 |
-| `@tflip/motion` | core + dom + 公共类型 | 导入安全，不自动包含粒子或 React |
+| `@kyun.si/tflip/core` | `normalizeOptions`、`sample` / `stateAt`、`presets` | 无，纯数学、可在服务端调用 |
+| `@kyun.si/tflip/dom` | `play`、`createAnimator`、`sequence`、`wrap` | 调用时需要 DOM；导入安全 |
+| `@kyun.si/tflip/effects` | `createParticles` | 创建效果实例时需要 Canvas 2D |
+| `@kyun.si/tflip/react` | `Motion`、`useMotion` | 可选 React peer，SSR 可导入和渲染 |
+| `@kyun.si/tflip` | core + dom + 公共类型 | 导入安全，不自动包含粒子或 React |
 
 发布格式为 ESM，随包提供 `.d.ts`。浏览器运行时不依赖第三方动画库；React 仅在使用 React 入口时需要。
 
-`@tflip/motion@0.3.1` 使用 [MIT 许可证](LICENSE)，可按许可条款修改、商用和分发。尚未发布 npm；通过网站 catalog 下载 SDK，或运行 `npm run pack:local` 得到相同字节的规范 `.tgz`。`private: true` 仅防止误发 npm。SDK、示例和 Skill 均携带许可证；参考视频和第三方品牌不属于本项目许可范围。
+`@kyun.si/tflip@0.3.2` 使用 [MIT 许可证](LICENSE)，可按许可条款修改、商用和分发。`npm run pack:local` 生成与网站相同字节的规范 SDK；`npm run publish:npm` 将该归档公开发布到 npm。开发仓库的 `private: true` 防止直接误发源码，生成的 SDK 不含该限制。SDK、示例和 Skill 均携带许可证；参考视频和第三方品牌不属于本项目许可范围。
 
 ## 原地运动：保持业务元素的 transform
 
@@ -58,7 +72,7 @@ npm run pack:local
 ```
 
 ```ts
-import { play } from '@tflip/motion/dom';
+import { play } from '@kyun.si/tflip/dom';
 
 const playback = play({
   element: document.querySelector<HTMLElement>('#motion-wrapper')!,
@@ -85,8 +99,8 @@ if (result.status === 'cancelled') console.log(result.reason);
 ## 跨区域：提供临时视觉内容
 
 ```ts
-import { play } from '@tflip/motion/dom';
-import { createParticles } from '@tflip/motion/effects';
+import { play } from '@kyun.si/tflip/dom';
+import { createParticles } from '@kyun.si/tflip/effects';
 
 const playback = play({
   from: document.querySelector('#ready')!,
@@ -136,7 +150,7 @@ const playback = play({
 `phases` 可设置 `anticipation/launch/roll/descent/settle` 的相对权重；未指定项沿用预设值，最终统一归一化。允许单个阶段为 0，但飞行阶段之和必须大于 0。`bounce` 范围为 0..1。`turns` 可为非负小数，`direction` 为 1 或 -1，`axis` 为 x/y/z。完成时包裹层恢复初始样式，因此半圈等非整圈姿态不会永久写入业务节点。
 
 ```ts
-import { sequence } from '@tflip/motion/dom';
+import { sequence } from '@kyun.si/tflip/dom';
 
 const timeline = sequence([
   { element: wrapper, preset: 'snappy', axis: 'x' },
@@ -156,7 +170,7 @@ await timeline.finished;
 
 ```tsx
 import { useRef } from 'react';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 
 export function TaskButton() {
   const ref = useRef<HTMLDivElement>(null);

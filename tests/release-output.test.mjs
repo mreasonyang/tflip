@@ -18,10 +18,10 @@ async function fixture(t) {
   await writeFile(join(root, 'playground/index.html'), '<!doctype html><script src="./app.js"></script>');
   await writeFile(join(root, 'playground/app.js'), 'export {};');
   const sdk = Buffer.from('fixture SDK bytes');
-  await writeFile(join(root, 'agent/downloads/tflip-motion-1.2.3.tgz'), sdk);
-  await writeFile(join(root, 'package.json'), JSON.stringify({ name: '@tflip/motion', version: '1.2.3' }));
+  await writeFile(join(root, 'agent/downloads/kyun.si-tflip-1.2.3.tgz'), sdk);
+  await writeFile(join(root, 'package.json'), JSON.stringify({ name: '@kyun.si/tflip', version: '1.2.3' }));
   await writeFile(join(root, 'agent/catalog.json'), JSON.stringify({ contentRevision: 'fixture', downloads: {}, package: {
-    name: '@tflip/motion', version: '1.2.3', url: './downloads/tflip-motion-1.2.3.tgz', bytes: sdk.length, sha256: hash(sdk),
+    name: '@kyun.si/tflip', version: '1.2.3', url: './downloads/kyun.si-tflip-1.2.3.tgz', bytes: sdk.length, sha256: hash(sdk),
   } }));
   return root;
 }
@@ -72,8 +72,8 @@ test('one revision covers HTML, nested modules, CSS and JSON without changing ca
   assert.ok((await read('playground/app.js')).includes(`settings.json?${version}`));
   assert.ok((await read('playground/style.css')).includes(`extra.css?theme=dark&${version}#theme`));
   const catalog = JSON.parse(await read('agent/catalog.json'));
-  assert.equal(catalog.package.url, './downloads/tflip-motion-1.2.3.tgz');
-  assert.equal(await read('agent/downloads/tflip-motion-1.2.3.tgz'), 'fixture SDK bytes');
+  assert.equal(catalog.package.url, './downloads/kyun.si-tflip-1.2.3.tgz');
+  assert.equal(await read('agent/downloads/kyun.si-tflip-1.2.3.tgz'), 'fixture SDK bytes');
   assert.equal(await read('_headers'), '/*\n  Cache-Control: no-cache, max-age=0, must-revalidate\n');
   const manifest = JSON.parse(await readFile(join(root, 'test-results/tailnet-preview-manifest.json'), 'utf8'));
   assert.equal(manifest.assets.find(asset => asset.path === '_headers').served, false);
@@ -141,7 +141,7 @@ test('pack:local rejects symlink destinations without writing through them', asy
   const root = await fixture(t);
   const outside = join(root, 'keep.txt');
   await writeFile(outside, 'unchanged');
-  await symlink(outside, join(root, 'tflip-motion-1.2.3.tgz'));
+  await symlink(outside, join(root, 'kyun.si-tflip-1.2.3.tgz'));
   await assert.rejects(copyCanonicalSdk(root), /Unsafe package path/);
   assert.equal(await readFile(outside, 'utf8'), 'unchanged');
 });

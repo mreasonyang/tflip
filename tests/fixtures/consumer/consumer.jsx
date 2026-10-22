@@ -1,8 +1,8 @@
 import { StrictMode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { play } from '@tflip/motion';
-import { createParticles } from '@tflip/motion/effects';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { play } from '@kyun.si/tflip';
+import { createParticles } from '@kyun.si/tflip/effects';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 
 const frames = new Set();
 const nativeFrame = window.requestAnimationFrame.bind(window);

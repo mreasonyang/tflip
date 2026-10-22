@@ -18,19 +18,21 @@ For a local file/archive, resolve the same relative paths on disk; browser `fetc
 
 ## Native SDK: lab
 
+For a catalog version confirmed as published to npm, install the exact version with `npm install @kyun.si/tflip@0.3.2` (use the catalog version if it differs). Otherwise use the archive below. `package.published: false` means registry availability has not been confirmed; do not infer publication from a successful build or the package name.
+
 Download the exact `package.url` file and verify its byte count and SHA-256 against the catalog. On macOS/Linux, `shasum -a 256 <downloaded-file>` computes the hash. Inspect the package manifest and use the application's existing package manager with lifecycle scripts disabled. With npm and the current filename:
 
 ```sh
-npm install --ignore-scripts ./tflip-motion-0.3.1.tgz
+npm install --ignore-scripts ./kyun.si-tflip-0.3.2.tgz
 ```
 
-Use the filename/version from the catalog if it differs. Do not run `npm install @tflip/motion` against the registry: this package is private and unpublished. The SDK is MIT licensed and declares Node >=20 for consumers. Source development uses the newer Node versions documented in the repository README. React is an optional peer (>=18 <20); vanilla usage does not require React. Do not replace an application's framework to satisfy the example.
+Use the filename/version from the catalog if it differs. The SDK is public-publishable, MIT licensed and declares Node >=20 for consumers. Source development uses the newer Node versions documented in the repository README. React is an optional peer (>=18 <20); vanilla usage does not require React. Do not replace an application's framework to satisfy the example.
 
-Imports: `@tflip/motion/core`, `/dom`, `/effects`, `/react`. The tarball contains built ESM, declarations, and its detailed API reference. Read specific types only when the concise [SDK contract](./sdk.md) is insufficient.
+Imports: `@kyun.si/tflip/core`, `/dom`, `/effects`, `/react`. The tarball contains built ESM, declarations, and its detailed API reference. Read specific types only when the concise [SDK contract](./sdk.md) is insufficient.
 
 ## Upgrading an existing installation
 
-Download the current tarball, inspect it, and update the application dependency and imports to `@tflip/motion` together. Version 0.3.1 uses only `data-tflip-*`, `--tflip-scene-height`, `tflip:languagechange`, `tflip:themechange`, `tflip.language`, and `tflip.theme`. Earlier branding selectors, preference keys, events, Skill paths and download URLs are retired from the current site. Historical package bytes are preserved in the local release archive. Apply the [configuration migration](./config.md) separately; the two-shot Stunt remains unchanged.
+Download the current tarball, inspect it, and update the application dependency and imports to `@kyun.si/tflip` together. Version 0.3.2 uses only `data-tflip-*`, `--tflip-scene-height`, `tflip:languagechange`, `tflip:themechange`, `tflip.language`, and `tflip.theme`. Earlier branding selectors, preference keys, events, Skill paths and download URLs are retired from the current site. Historical package bytes are preserved in the local release archive. Apply the [configuration migration](./config.md) separately; the two-shot Stunt remains unchanged.
 
 ## Gallery / vehicle scenes
 

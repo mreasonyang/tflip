@@ -1,6 +1,6 @@
 # Tflip Agent 接入层
 
-当前版本为 `@tflip/motion@0.3.1`。SDK、原创示例和 Skill 使用 MIT 许可证；`private: true` 仅用于防止误发 npm，安装使用站点的版本化归档。线上展示由 Cloudflare Pages 托管，接入文件继续使用相对路径，支持任意部署前缀。
+当前版本为 `@kyun.si/tflip@0.3.2`。SDK、原创示例和 Skill 使用 MIT 许可证。SDK 支持 npm 公开发布；开发仓库的 `private: true` 不进入 SDK。发布前使用站点的版本化归档，不能将 `catalog.package.published: false` 当成 npm 已上线。线上展示由 Cloudflare Pages 托管，接入文件继续使用相对路径，支持任意部署前缀。
 
 ## 用户入口
 
@@ -13,7 +13,7 @@
 - `agent/recipes/`、`agent/references/`：原生/React 接入、配置映射、清理与验证。
 - `agent/examples/`、`agent/runtime/`：可独立挂载的 Gallery 和双镜头 Stunt，以及配套运行时。
 
-当前下载目录只包含 0.3.1 的 SDK、示例和 Skill 三个归档。历史版本不混入当前分发面。
+当前下载目录只包含 0.3.2 的 SDK、示例和 Skill 三个归档。历史版本不混入当前分发面。
 
 ## 接口与升级
 

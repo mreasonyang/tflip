@@ -1,6 +1,6 @@
 # 发布与回滚
 
-源码、SDK 和网站分别校验，所有结果绑定同一个 Git revision。当前由 GitHub 保存源码，Cloudflare Pages 托管 `tflip.kyun.si`；npm 发布保持关闭。
+源码、SDK 和网站分别校验，所有结果绑定同一个 Git revision。当前由 GitHub 保存源码，Cloudflare Pages 托管 `tflip.kyun.si`；npm 包名为 `@kyun.si/tflip`，由拥有 `kyun.si` scope 发布权限的账号公开发布。
 
 ## 生成候选版本
 
@@ -12,6 +12,22 @@
 
 `npm pack` 直接作用于开发仓库不是受支持的消费者交付方式；统一使用 `npm run pack:local`。发布目录由干净 staging 生成；不要向其中混入源码、参考视频、秘密、运行日志或历史下载。
 
+## npm 发布
+
+SDK 的 `publishConfig` 指定 npm 官方 registry 与 `access: public`，不含 `private`、开发依赖或生命周期脚本。开发仓库保留 `private: true`，防止把源码目录作为另一份包直接发布。
+
+准备并验证规范 SDK 后，执行：
+
+```sh
+npm run publish:npm -- --dry-run
+npm login
+npm run publish:npm
+```
+
+预演不会上传。正式发布要求已登录账号拥有 `kyun.si` scope 的发布权限；登录和二次验证在 npm 自己的流程中完成。发布脚本先核对 catalog 中的包名、版本、文件名、字节数与 SHA-256，再发布同一归档，不重新打包开发目录。
+
+发布后通过 `npm view @kyun.si/tflip@0.3.2 dist --json` 读取 registry 元数据，下载 registry tarball 并与规范 SDK 核对字节，独立运行 `npm install @kyun.si/tflip@0.3.2` 后检查导入、类型和 SSR。替换命令中的版本为本次版本。确认这些步骤后再将对应站点 catalog 的 `package.published` 标为 `true` 并重新部署；离线包仍应保留自身的下载与校验信息。没有 registry 证据时保持 `false`，不宣称 npm 已上线。
+
 静态输出会根据全部输入文件和生成器源码计算 `assetRevision`，并为 HTML 入口、嵌套 ESM、CSS 及 JSON 的本地资源引用统一添加 `?v=`。源码及规范 SDK/示例/Skill 下载的 URL、归档字节不因此改变。manifest 分别记录输入哈希与最终输出哈希；资源变化后重新生成整份站点，避免只上传部分文件。
 
 输出中的 `_headers` 使用单条全路径规则设置 `Cache-Control: no-cache, max-age=0, must-revalidate`，避免多个规则合并出冲突值。Cloudflare 将它作为部署配置解析，不公开为资源；HTTP 读回应跳过 manifest 中 `served: false` 的条目，其余文件继续按哈希核验。规则行为见 [Cloudflare Pages Headers](https://developers.cloudflare.com/pages/configuration/headers/)。发布时核对根路径、JS 和 catalog 的响应头，以及入口与嵌套资源中的 `v` 是否等于本次 `assetRevision`。
@@ -22,7 +38,7 @@
 - 把本次 manifest 对应的站点 ZIP 上传到现有 Cloudflare Pages 项目 `tflip`。部署完成后记录部署 ID 与 Git SHA。
 - 对公开 HTTPS 根路径、catalog、SDK、示例、Skill、LICENSE 做读回；版本和归档哈希必须匹配。访问不存在的下载路径必须返回 404，不能返回成功状态的 HTML。
 - 在公开域名检查播放、暂停、取消、生成代码与 Agent 指令。浏览器控制台无错误；线上验收不能由本地截图替代。
-- 仅在相应结果可证实时发布 release notes；保留真实设备、浏览器版本和宿主环境的验收边界。当前不自动发 npm，也不自动创建访问凭据或修改 DNS。
+- 仅在相应结果可证实时发布 release notes；保留真实设备、浏览器版本和宿主环境的验收边界。npm 发布单独执行，不自动创建访问凭据或修改 DNS。
 
 ## 回滚
 

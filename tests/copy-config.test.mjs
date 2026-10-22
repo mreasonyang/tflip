@@ -45,8 +45,8 @@ async function consumer(t) {
   const directory = await mkdtemp(join(tmpdir(), 'tflip-copy-config-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
   await writeFile(join(directory, 'package.json'), '{"type":"module"}\n');
-  await mkdir(join(directory, 'node_modules', '@tflip'), { recursive: true });
-  await symlink(root, join(directory, 'node_modules', '@tflip', 'motion'), 'dir');
+  await mkdir(join(directory, 'node_modules', '@kyun.si'), { recursive: true });
+  await symlink(root, join(directory, 'node_modules', '@kyun.si', 'tflip'), 'dir');
   return directory;
 }
 

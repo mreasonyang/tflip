@@ -1,16 +1,24 @@
-# Tflip 0.3.1
+# Tflip 0.3.2
 
-Framework-independent roll, flight and landing motion. This ESM package includes built JavaScript, TypeScript declarations and the [complete parameter reference](API.md). Browser animation has no runtime dependencies. React is an optional peer, required only for `@tflip/motion/react` (React 18 or 19). The SDK supports Node.js 20 or newer for server-side imports; its source-development toolchain has separate requirements.
+Framework-independent roll, flight and landing motion. This ESM package includes built JavaScript, TypeScript declarations and the [complete parameter reference](API.md). Browser animation has no runtime dependencies. React is an optional peer, required only for `@kyun.si/tflip/react` (React 18 or 19). The SDK supports Node.js 20 or newer for server-side imports; its source-development toolchain has separate requirements.
 
-## Install the downloaded SDK
+## Install
+
+For a version published to npm:
+
+```sh
+npm install @kyun.si/tflip
+```
+
+For a downloaded or not-yet-published version, install its exact archive instead. A catalog with `package.published: false` does not confirm registry availability.
 
 Verify the archive's SHA-256 and byte count against the download catalog, then use your application's existing package manager:
 
 ```sh
-npm install --ignore-scripts ./tflip-motion-0.3.1.tgz
+npm install --ignore-scripts ./kyun.si-tflip-0.3.2.tgz
 ```
 
-This distribution is not published to npm; do not substitute a registry install. It contains no lifecycle scripts and does not require a source build. Use it through your existing ESM-capable application bundler. Direct browser modules need an import map or imports mapped to the installed `dist/` files. No CommonJS entry is provided.
+The SDK contains no lifecycle scripts and does not require a source build. Both installation methods use the same package name and exports. Use it through your existing ESM-capable application bundler. Direct browser modules need an import map or imports mapped to the installed `dist/` files. No CommonJS entry is provided.
 
 The root export includes core and DOM APIs. Subpaths are `/core`, `/dom`, `/effects` and `/react`. Imports are safe during server rendering; call DOM animation only after client mount. Pure `sample(timeMs, options)` from `/core` does not need a browser. Distances and path coordinates are viewport CSS pixels, time is milliseconds and angles are degrees.
 
@@ -22,7 +30,7 @@ The root export includes core and DOM APIs. Subpaths are `/core`, `/dom`, `/effe
 ```
 
 ```js
-import { createAnimator } from '@tflip/motion/dom';
+import { createAnimator } from '@kyun.si/tflip/dom';
 
 const wrapper = document.querySelector('#motion-wrapper');
 const button = document.querySelector('#roll');
@@ -51,7 +59,7 @@ The wrapper owns animation transforms; keep business content's own transforms on
 
 ```tsx
 import { useRef } from 'react';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 
 export function RollCard() {
   const ref = useRef<HTMLDivElement>(null);

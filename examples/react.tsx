@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 
 /** Import this component into an existing React 18/19 project. */
 export function RollExample() {

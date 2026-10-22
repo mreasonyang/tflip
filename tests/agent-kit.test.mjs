@@ -31,7 +31,7 @@ test('Tflip catalog exposes eight canonical recipes, aliases and verified local 
   const source = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
   assert.equal(catalog.package.version, source.version);
   assert.equal(catalog.package.published, false);
-  assert.equal(catalog.package.name, '@tflip/motion');
+  assert.equal(catalog.package.name, '@kyun.si/tflip');
   assert.equal(catalog.recipes.length, 8);
   assert.deepEqual(catalog.recipes.map(item => item.id), ['lab', 'orbit', 'portal', 'vinyl', 'candy', 'arcade', 'paper', 'stunt']);
   assert.equal(new Set(catalog.recipes.map(item => item.id)).size, 8);
@@ -128,7 +128,8 @@ test('SDK download contains only runtime, types and public API documentation wit
   assert.equal(metadata.name, catalog.package.name);
   assert.equal(metadata.version, catalog.package.version);
   assert.equal(metadata.scripts, undefined);
-  assert.equal(metadata.private, true);
+  assert.equal(metadata.private, undefined);
+  assert.deepEqual(metadata.publishConfig, { access: 'public', registry: 'https://registry.npmjs.org/' });
   const names = execFileSync('tar', ['-tzf', localPath(catalog.package.url)], { encoding: 'utf8' }).trim().split('\n');
   assert.ok(names.includes('package/dist/react/index.d.ts'));
   assert.ok(names.every(name => /^package\/(?:dist\/|package\.json$|README\.md$|API\.md$|LICEN[CS]E(?:\.(?:md|txt))?$)/i.test(name)));
@@ -145,7 +146,7 @@ with tarfile.open(sdk) as archive:
  assert 'scripts' not in metadata and 'devDependencies' not in metadata
  readme=files['package/README.md'].decode()
  assert '{{SDK_' not in readme
- assert 'tflip-motion-'+metadata['version']+'.tgz' in readme
+ assert 'kyun.si-tflip-'+metadata['version']+'.tgz' in readme
  for name,data in files.items():
   if name.endswith('.md'):
    for target in re.findall(r'\\[[^\\]]*\\]\\(([^)]+)\\)',data.decode()):

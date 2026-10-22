@@ -10,7 +10,7 @@ Use the native SDK for an element roll or a decorative transfer between anchors.
 ```
 
 ```js
-import { createAnimator } from '@tflip/motion/dom';
+import { createAnimator } from '@kyun.si/tflip/dom';
 
 export function mountRoll(button, wrapper) {
   const animator = createAnimator({
@@ -39,7 +39,7 @@ const cleanup = mountRoll(
 
 ```tsx
 import { useRef } from 'react';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 
 export function RollCard() {
   const ref = useRef<HTMLDivElement>(null);
@@ -64,7 +64,7 @@ The hook owns cleanup on unmount. Keep child transforms on the inner content. Ca
 ## Transfer between application elements
 
 ```js
-import { play } from '@tflip/motion/dom';
+import { play } from '@kyun.si/tflip/dom';
 
 export function fly(source, target) {
   return play({

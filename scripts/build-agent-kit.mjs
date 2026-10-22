@@ -72,7 +72,8 @@ for (const name of ['stunt-motion.js', 'stunt-scene.js', 'roadster-geometry.js',
 
 const sdkStage = join(work, 'sdk');
 await mkdir(sdkStage, { recursive: true });
-const { scripts, devDependencies, files: ignoredFiles, ...metadata } = pkg;
+// The source workspace stays private; the canonical consumer SDK is public.
+const { scripts, devDependencies, files: ignoredFiles, private: sourcePrivate, ...metadata } = pkg;
 await writeJSON(join(sdkStage, 'package.json'), { ...metadata, engines: { node: '>=20' }, files: ['dist', 'README.md', 'API.md', ...licenseFiles] });
 await copyRuntime(join(sdkStage, 'dist'));
 await cp(join(root, 'docs/API.md'), join(sdkStage, 'API.md'));
@@ -83,8 +84,7 @@ const licenseNotice = licenseFiles.length ? `The included ${licenseFiles.map(nam
 // the standalone package, whose README lives beside API.md and dist/.
 const sdkReadme = (await readFile(join(root, 'docs/SDK_README.md'), 'utf8'))
   .replace(/^# Tflip .+$/m, `# Tflip ${pkg.version}`)
-  .replaceAll('@tflip/motion', pkg.name)
-  .replace(/tflip-motion-[0-9][A-Za-z0-9.-]*\.tgz/g, sdkFilename)
+  .replace(/^npm install --ignore-scripts \.\/[^\s]+\.tgz$/m, `npm install --ignore-scripts ./${sdkFilename}`)
   .replace(/Package license identifier: `[^`]+`\./, `Package license identifier: \`${pkg.license}\`.`)
   .replace(/^The included .+ contains the applicable terms\.$/m, licenseNotice)
   .replaceAll('(../dist/', '(dist/');

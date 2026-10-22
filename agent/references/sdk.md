@@ -39,7 +39,7 @@ Keep `reducedMotion: 'system'` unless the user explicitly needs another policy. 
 ## Optional particles
 
 ```js
-import { createParticles } from '@tflip/motion/effects';
+import { createParticles } from '@kyun.si/tflip/effects';
 const effects = createParticles({ jet: true, trail: true });
 // Pass effects to play(); omit it when neither effect is needed.
 ```

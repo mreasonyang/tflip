@@ -85,8 +85,8 @@ type EffectFactory = (context: {
 | `clip` | 无 | 同一 Document 中有定位上下文的 HTMLElement；将 Canvas 挂在它内部并限制画布尺寸 |
 
 ```ts
-import { play } from '@tflip/motion/dom';
-import { createParticles } from '@tflip/motion/effects';
+import { play } from '@kyun.si/tflip/dom';
+import { createParticles } from '@kyun.si/tflip/effects';
 
 // stage 需由应用设置 position: relative；motionWrapper 是独立运动包裹层。
 const size = motionWrapper.getBoundingClientRect();

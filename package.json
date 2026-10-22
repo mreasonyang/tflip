@@ -1,8 +1,12 @@
 {
-  "name": "@tflip/motion",
-  "version": "0.3.1",
+  "name": "@kyun.si/tflip",
+  "version": "0.3.2",
   "description": "Tflip: framework-independent 3D roll, flight and landing motion with optional Canvas effects and React bindings.",
   "private": true,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -48,6 +52,7 @@
     "test:browser": "node --test --test-concurrency=1 tests/*.e2e.mjs",
     "dev": "node scripts/serve.mjs",
     "pack:local": "npm run build:agent && node scripts/pack-local.mjs",
+    "publish:npm": "node scripts/publish-npm.mjs",
     "test:all": "npm test && npm run test:browser",
     "release:prepare": "npm run test:all && npm run preview:sync && node scripts/release-artifacts.mjs",
     "test:consumer:prepare": "node scripts/build-consumer-fixture.mjs"

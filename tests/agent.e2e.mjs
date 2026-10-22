@@ -70,12 +70,12 @@ test('portable agent handoff and standalone examples', { timeout: 360000 }, asyn
     assert.match(html, /id="agentEntryLink"[^>]+href="\.\.\/agent\/index\.md"/);
     const catalogURL = new URL('agent/catalog.json', base); const response = await fetch(catalogURL); assert.equal(response.status, 200);
     const catalog = await response.json(); assert.deepEqual(catalog.recipes.map(r => r.id), ids);
-    assert.equal(catalog.package.name, '@tflip/motion'); assert.equal(catalog.package.version, '0.3.1');
+    assert.equal(catalog.package.name, '@kyun.si/tflip'); assert.equal(catalog.package.version, '0.3.2');
     assert.equal(catalog.docs.skill, './tflip/SKILL.md');
     assert.deepEqual(catalog.aliases, { roadster: 'stunt', ramp: 'stunt' });
     const schema = await (await fetch(new URL(catalog.docs.configuration, catalogURL))).json();
     for (const alias of ['roadster', 'ramp']) assert.ok(schema.properties.demo.enum.includes(alias), `Legacy JSON ID ${alias} remains documented and valid`);
-    assert.ok(schema.properties.sdkVersion.enum.includes('0.1.0')); assert.ok(schema.properties.sdkVersion.enum.includes('0.2.0')); assert.equal(catalog.configuration.sdkVersion, '0.3.1');
+    assert.ok(schema.properties.sdkVersion.enum.includes('0.1.0')); assert.ok(schema.properties.sdkVersion.enum.includes('0.2.0')); assert.equal(catalog.configuration.sdkVersion, '0.3.2');
     for (const alias of ['roadster', 'ramp']) { const r = await fetch(new URL(`./recipes/${alias}.md`, catalogURL)); assert.equal(r.status, 200); assert.match(await r.text(), /stunt/i); }
     const paths = [...Object.values(catalog.docs), ...catalog.recipes.map(r => r.recipe), './examples/index.html', './examples/index.js', './examples/gallery/index.js', './examples/featured/index.js', './runtime/core/index.js', './runtime/dom/index.js', './runtime/effects/index.js'];
     for (const relative of paths) { assert.ok(!/^(?:[a-z]+:|\/)/i.test(relative)); const url = new URL(relative, catalogURL); assert.ok(url.href.startsWith(base)); const r = await fetch(url); assert.equal(r.status, 200, url.href); assert.ok((await r.arrayBuffer()).byteLength > 0); }
@@ -111,7 +111,7 @@ test('portable agent handoff and standalone examples', { timeout: 360000 }, asyn
         await set(page, '#anchorMode', 'points'); for (const [id, value] of Object.entries({ fromX: 101, fromY: 202, toX: 503, toY: 304 })) await set(page, `#${id}`, value);
         await set(page, '#agentFramework', 'react');
         const copied = await copy(page); const data = payload(copied.text);
-        assert.equal(copied.error, 'false'); assert.equal(data.sdkVersion, '0.3.1'); assert.equal(data.demo, 'lab'); assert.equal(data.framework, 'react');
+        assert.equal(copied.error, 'false'); assert.equal(data.sdkVersion, '0.3.2'); assert.equal(data.demo, 'lab'); assert.equal(data.framework, 'react');
         for (const [key, value] of Object.entries(settings)) assert.equal(data.config.motion[key] ?? data.config.motion.phases[key], value, key);
         assert.deepEqual(data.config.motion.path, [{ x: 120, y: 240, z: 30 }]); assert.equal(data.config.motion.shadow, false);
         assert.deepEqual(data.config.anchors, { kind: 'viewport', from: { x: 101, y: 202 }, to: { x: 503, y: 304 }, wrapper: '[data-motion-wrapper]' });

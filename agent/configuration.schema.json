@@ -17,13 +17,14 @@
     },
     "sdkVersion": {
       "enum": [
+        "0.3.2",
         "0.3.1",
         "0.3.0",
         "0.2.1",
         "0.2.0",
         "0.1.0"
       ],
-      "description": "0.3.1 is current. Earlier versions are recognized only for explicit migration; preserve the original and upgrade sdkVersion before current execution."
+      "description": "0.3.2 is current. Earlier versions are recognized only for explicit migration; preserve the original and upgrade sdkVersion before current execution."
     },
     "demo": {
       "description": "Eight canonical IDs. roadster and ramp are deprecated aliases for stunt.",

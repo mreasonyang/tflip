@@ -1,9 +1,9 @@
 // Compile public entry points as a consumer, rather than importing internal source.
-import { play, sample, type MotionOptions, type PlaybackResult } from '@tflip/motion';
-import { normalizeOptions, presets, type Pose } from '@tflip/motion/core';
-import { createAnimator, sequence, wrap } from '@tflip/motion/dom';
-import { createParticles, type EffectFactory } from '@tflip/motion/effects';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { play, sample, type MotionOptions, type PlaybackResult } from '@kyun.si/tflip';
+import { normalizeOptions, presets, type Pose } from '@kyun.si/tflip/core';
+import { createAnimator, sequence, wrap } from '@kyun.si/tflip/dom';
+import { createParticles, type EffectFactory } from '@kyun.si/tflip/effects';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 import { useRef } from 'react';
 
 declare const element: HTMLElement;

@@ -30,24 +30,24 @@ for (const name of ['react', 'react-dom', '@types/react', '@types/react-dom', 't
 await rm(host, { recursive: true, force: true });
 await mkdir(join(host, 'vendor'), { recursive: true });
 await cp(fixture, host, { recursive: true });
-const archiveName = `tflip-motion-${manifest.version}.tgz`;
+const archiveName = `${manifest.name.replace(/^@/, '').replaceAll('/', '-')}-${manifest.version}.tgz`;
 await writeFile(join(host, 'vendor', archiveName), archiveBytes);
 await writeFile(join(host, 'package.json'), JSON.stringify({
   name: 'tflip-independent-consumer-fixture', version: '1.0.0', private: true, type: 'module',
-  dependencies: { '@tflip/motion': `file:vendor/${archiveName}`, react: versions.react, 'react-dom': versions['react-dom'] },
+  dependencies: { [manifest.name]: `file:vendor/${archiveName}`, react: versions.react, 'react-dom': versions['react-dom'] },
   devDependencies: { '@types/react': versions['@types/react'], '@types/react-dom': versions['@types/react-dom'], typescript: versions.typescript },
 }, null, 2) + '\n');
 execFileSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['install', '--ignore-scripts', '--no-audit', '--no-fund'], {
   cwd: host, stdio: 'inherit', timeout: 180000,
 });
-const importTargets = ['@tflip/motion', '@tflip/motion/core', '@tflip/motion/dom', '@tflip/motion/effects', '@tflip/motion/react', 'react', 'react-dom/client'];
+const importTargets = ['', '/core', '/dom', '/effects', '/react'].map(suffix => `${manifest.name}${suffix}`).concat(['react', 'react-dom/client']);
 const resolvedUrls = JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e',
   `console.log(JSON.stringify(Object.fromEntries(${JSON.stringify(importTargets)}.map(name => [name, import.meta.resolve(name)]))))`], { cwd: host, encoding: 'utf8' }));
 const resolutions = Object.fromEntries(Object.entries(resolvedUrls).map(([name, url]) => [name, fileURLToPath(url)]));
 for (const [name, path] of Object.entries(resolutions)) {
   if (!path.startsWith(join(host, 'node_modules') + sep)) throw new Error(`${name} escaped the isolated consumer installation: ${path}`);
 }
-const installed = await json(join(host, 'node_modules/@tflip/motion/package.json'));
+const installed = await json(join(host, 'node_modules', ...manifest.name.split('/'), 'package.json'));
 if (installed.version !== manifest.version) throw new Error('Installed consumer SDK version does not match the catalog.');
 execFileSync(process.execPath, [join(host, 'node_modules/typescript/bin/tsc'), '-p', 'tsconfig.json'], { cwd: host, stdio: 'inherit' });
 const ssr = JSON.parse(execFileSync(process.execPath, ['ssr.mjs'], { cwd: host, encoding: 'utf8' }));
@@ -57,7 +57,8 @@ const output = await build({
   metafile: true, define: { 'process.env.NODE_ENV': '"development"' },
 });
 const inputs = Object.keys(output.metafile.inputs);
-if (!inputs.some(path => path.startsWith('node_modules/@tflip/motion/dist/'))) throw new Error('Browser bundle did not consume the installed SDK.');
+const installedDist = `node_modules/${manifest.name}/dist/`;
+if (!inputs.some(path => path.startsWith(installedDist))) throw new Error('Browser bundle did not consume the installed SDK.');
 if (inputs.some(path => resolve(host, path).startsWith(join(root, 'src') + sep))) throw new Error('Consumer bundle must not import repository SDK source.');
 const evidence = {
   createdAt: new Date().toISOString(), package: { name: installed.name, version: installed.version, sha256: catalog.package.sha256, bytes: archiveBytes.byteLength },

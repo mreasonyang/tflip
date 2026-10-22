@@ -1,8 +1,8 @@
-import { play, sample, type MotionOptions, type PlaybackResult } from '@tflip/motion';
-import { normalizeOptions } from '@tflip/motion/core';
-import { createAnimator, sequence } from '@tflip/motion/dom';
-import { createParticles } from '@tflip/motion/effects';
-import { Motion, useMotion } from '@tflip/motion/react';
+import { play, sample, type MotionOptions, type PlaybackResult } from '@kyun.si/tflip';
+import { normalizeOptions } from '@kyun.si/tflip/core';
+import { createAnimator, sequence } from '@kyun.si/tflip/dom';
+import { createParticles } from '@kyun.si/tflip/effects';
+import { Motion, useMotion } from '@kyun.si/tflip/react';
 import { useRef } from 'react';
 
 declare const element: HTMLElement;
