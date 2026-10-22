@@ -90,16 +90,39 @@ const sdkReadme = (await readFile(join(root, 'docs/SDK_README.md'), 'utf8'))
   .replaceAll('(../dist/', '(dist/');
 await writeFile(join(sdkStage, 'README.md'), sdkReadme);
 const packed = JSON.parse(run('npm', ['pack', '--offline', '--ignore-scripts', '--json', '--cache', join(work, 'npm-cache'), '--pack-destination', join(kit, 'downloads')], sdkStage))[0];
-const sdk = { name: pkg.name, version: pkg.version, ...await artifact(join(kit, 'downloads', packed.filename)), published: false, license: pkg.license };
 // Publication is confirmed by a checked-in registry readback, never inferred
 // from a successful local build or inherited by a different version/archive.
 const publication = await readFile(join(root, 'npm-publication.json'), 'utf8').then(JSON.parse).catch(error => {
   if (error.code === 'ENOENT') return undefined;
   throw error;
 });
-sdk.published = publication?.name === sdk.name && publication.version === sdk.version
-  && publication.registry === pkg.publishConfig.registry && publication.bytes === sdk.bytes
-  && publication.sha256 === sdk.sha256;
+const published = publication?.name === pkg.name && publication.version === pkg.version
+  && publication.registry === pkg.publishConfig.registry;
+const sdkPath = join(kit, 'downloads', packed.filename);
+if (published) {
+  const frozenPath = join(root, 'published-sdk', sdkFilename);
+  const frozen = await readFile(frozenPath);
+  if (frozen.length !== publication.bytes || digest(frozen) !== publication.sha256) {
+    throw new Error('Frozen SDK does not match its verified npm publication');
+  }
+  // npm/tar compression differs between platforms. Compare every unpacked
+  // file before reusing the registry archive; source changes need a new version.
+  run('python3', ['-c', `import hashlib,pathlib,sys,tarfile
+def payload(filename):
+ result={}
+ with tarfile.open(filename) as archive:
+  for entry in archive.getmembers():
+   if entry.isdir(): continue
+   if not entry.isfile() or not entry.name.startswith('package/') or '..' in pathlib.PurePosixPath(entry.name).parts or entry.name in result:
+    raise ValueError('Unsafe SDK archive entry: '+entry.name)
+   result[entry.name]=hashlib.sha256(archive.extractfile(entry).read()).hexdigest()
+ return result
+candidate=payload(sys.argv[1]); frozen=payload(sys.argv[2])
+different=sorted(name for name in candidate.keys() | frozen.keys() if candidate.get(name)!=frozen.get(name))
+if different: raise ValueError('Published SDK payload changed; bump the package version: '+', '.join(different))`, sdkPath, frozenPath], root);
+  await cp(frozenPath, sdkPath);
+}
+const sdk = { name: pkg.name, version: pkg.version, ...await artifact(sdkPath), published: Boolean(published), license: pkg.license };
 
 const recipes = ['lab', 'orbit', 'portal', 'vinyl', 'candy', 'arcade', 'paper', 'stunt'].map(id => ({
   id, kind: id === 'lab' ? 'sdk' : id === 'stunt' ? 'canvas-scene' : 'composition',

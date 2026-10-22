@@ -26,7 +26,9 @@ npm run publish:npm
 
 预演不会上传。正式发布要求已登录账号拥有 `kyun.si` scope 的发布权限；登录和二次验证在 npm 自己的流程中完成。发布脚本先核对 catalog 中的包名、版本、文件名、字节数与 SHA-256，再发布同一归档，不重新打包开发目录。
 
-发布后通过 `npm view @kyun.si/tflip@0.3.2 dist --json` 读取 registry 元数据，下载 registry tarball 并与规范 SDK 核对字节，独立运行 `npm install @kyun.si/tflip` 后检查实际安装的版本、五个导出入口、类型和 SSR。替换命令中的版本为本次版本。确认这些步骤后，把 registry、tarball URL、包名、版本、字节数、SHA-256、integrity、验证时间及源提交写入 `npm-publication.json`，重新构建分发资料并部署。构建仅在回执与本次 SDK 全部匹配时设置 `package.published: true`，不会继承到新版本。没有匹配的 registry 证据时保持 `false`，不宣称 npm 已上线。
+发布后通过 `npm view @kyun.si/tflip@0.3.2 dist --json` 读取 registry 元数据，下载 registry tarball 并与规范 SDK 核对字节，独立运行 `npm install @kyun.si/tflip` 后检查实际安装的版本、五个导出入口、类型和 SSR。替换命令中的版本为本次版本。确认这些步骤后，把 registry、tarball URL、包名、版本、字节数、SHA-256、integrity、验证时间及源提交写入 `npm-publication.json`，并把同一份 registry tarball 保存到 `published-sdk/` 后提交。
+
+重新构建时，逐文件比较新构建的 SDK 与冻结归档的解包内容；内容相同后使用已发布归档的精确字节，避免不同平台的 npm/tar 压缩差异。内容变化必须升级版本，不能覆盖已发布版本。回执、冻结归档及构建内容全部匹配时才设置 `package.published: true`，不会继承到新版本。没有匹配的 registry 证据时保持 `false`，不宣称 npm 已上线。
 
 静态输出会根据全部输入文件和生成器源码计算 `assetRevision`，并为 HTML 入口、嵌套 ESM、CSS 及 JSON 的本地资源引用统一添加 `?v=`。源码及规范 SDK/示例/Skill 下载的 URL、归档字节不因此改变。manifest 分别记录输入哈希与最终输出哈希；资源变化后重新生成整份站点，避免只上传部分文件。
 
