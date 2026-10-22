@@ -51,8 +51,9 @@ jobs:
         timeout-minutes: 5
         run: |
           # The runner's Azure mirror can stall package downloads for 20+ minutes.
-          # Keep Ubuntu's package signatures and use its canonical archive.
-          sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources
+          # The image also resolves Ubuntu sources through this mirror list.
+          # Keep package signatures and use the canonical archive in both files.
+          sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/apt-mirrors.txt
           npx --no-install playwright install --with-deps webkit
       - run: npm run build:agent
       - run: npm run test:browser

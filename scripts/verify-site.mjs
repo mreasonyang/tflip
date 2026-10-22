@@ -27,7 +27,9 @@ await Promise.all(Array.from({ length: 6 }, async () => {
   while (cursor < assets.length) {
     const asset = assets[cursor++];
     try {
-      const response = await fetch(new URL(asset.path === 'index.html' ? '' : asset.path, base), {
+      const url = new URL(asset.path === 'index.html' ? '' : asset.path, base);
+      if (/\.(js|css|json)$/.test(asset.path)) url.searchParams.set('v', manifest.assetRevision);
+      const response = await fetch(url, {
         headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(30000),
       });
       if (response.status !== 200) throw new Error(`HTTP ${response.status}`);
@@ -35,11 +37,11 @@ await Promise.all(Array.from({ length: 6 }, async () => {
       const sha256 = createHash('sha256').update(bytes).digest('hex');
       if (bytes.length !== asset.bytes || sha256 !== asset.sha256) throw new Error('Served bytes differ from the release manifest');
       const cacheControl = response.headers.get('cache-control') || '';
-      if (['index.html', 'playground/app.js', 'agent/catalog.json'].includes(asset.path)
+      if (['index.html', 'agent/catalog.json'].includes(asset.path)
         && (!/\bno-cache\b/.test(cacheControl) || !/\bmax-age=0\b/.test(cacheControl) || !/\bmust-revalidate\b/.test(cacheControl))) {
         throw new Error('Expected revalidation cache headers are missing');
       }
-      checks.push({ path: asset.path, bytes: bytes.length, sha256, cacheControl });
+      checks.push({ path: asset.path, url: url.href, bytes: bytes.length, sha256, cacheControl });
     } catch (error) { failures.push({ path: asset.path, error: error.message }); }
   }
 }));

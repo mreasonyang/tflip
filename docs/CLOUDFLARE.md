@@ -38,7 +38,7 @@ node scripts/verify-site.mjs https://tflip-site.pages.dev /absolute/path/to/rele
 node scripts/verify-site.mjs https://tflip.kyun.si /absolute/path/to/release-manifest.json test-results/production-verification.json
 ```
 
-Use the actual Pages deployment URL and manifest path. The verifier checks every served file, key cache headers and the missing-download HTTP status. Browser checks and proof of automatic deployment remain separate.
+Use the actual Pages deployment URL and manifest path. The verifier checks every served file, HTML/catalog revalidation headers and the missing-download HTTP status. It requests JS/CSS/JSON with the release's `assetRevision`, as the generated page does, and records their response headers. The current custom domain gives JavaScript a four-hour browser TTL even though Pages' origin headers request revalidation; each build's new asset URL prevents reuse of that older browser entry. Browser checks and proof of automatic deployment remain separate.
 
 ## Routine deployment and recovery
 
