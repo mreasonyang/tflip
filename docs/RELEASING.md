@@ -2,7 +2,7 @@
 
 源码、SDK 和网站分别校验，所有结果绑定同一个 Git revision。当前由 GitHub 保存源码，Cloudflare Pages 托管 `tflip.kyun.si`；npm 包名为 `@kyun.si/tflip`，由拥有 `kyun.si` scope 发布权限的账号公开发布。
 
-网站正在迁移到 Cloudflare Pages 原生 GitHub 集成，配置和切换步骤见 [Cloudflare 部署](CLOUDFLARE.md)。迁移验收完成前，生产仍由原 Direct Upload 项目 `tflip` 提供；完成后由 Git 集成项目在 `main` 推送时自动部署。GitHub Actions 负责验证与打包，不保存 Cloudflare 发布 token，也不代替原生构建状态。
+网站使用 Cloudflare Pages 原生 GitHub 集成，配置和验收步骤见 [Cloudflare 部署](CLOUDFLARE.md)。项目 `tflip-site` 在 `main` 推送时自动构建并部署到 `tflip.kyun.si`。GitHub Actions 负责验证与打包，不保存 Cloudflare 发布 token，也不代替原生构建状态。原 Direct Upload 项目 `tflip` 保留为迁移恢复基线，当前部署证据见 [部署回执](native-git-deployment.json)。
 
 ## 生成候选版本
 
@@ -39,14 +39,14 @@ npm run publish:npm
 ## 发布检查
 
 - GitHub Actions 必须通过；它在声明的开发 Node 版本上跑单元/类型检查，并分别跑 Brave、WebKit，再生成候选包。
-- 把本次 manifest 对应的站点 ZIP 上传到现有 Cloudflare Pages 项目 `tflip`。部署完成后记录部署 ID 与 Git SHA。
+- 推送已检查的提交到 `main`，等待原生 `Cloudflare Pages` 检查及 `tflip-site` 构建成功。核对部署源 Git SHA，并记录部署 ID。站点 ZIP 作为可核验的交付归档保留，常规部署由 Cloudflare 从 Git 构建。
 - 对公开 HTTPS 根路径、catalog、SDK、示例、Skill、LICENSE 做读回；版本和归档哈希必须匹配。访问不存在的下载路径必须返回 404，不能返回成功状态的 HTML。
 - 在公开域名检查播放、暂停、取消、生成代码与 Agent 指令。浏览器控制台无错误；线上验收不能由本地截图替代。
 - 仅在相应结果可证实时发布 release notes；保留真实设备、浏览器版本和宿主环境的验收边界。npm 发布单独执行，不自动创建访问凭据或修改 DNS。
 
 ## 回滚
 
-1. 在 Pages 的 `tflip` 部署历史中选择上一个已验收的生产 deployment，使用该 deployment 的 rollback 操作；或重新上传其完整站点 ZIP。不要把旧 SDK 与新 catalog 混用。
+1. 在 Pages 的 `tflip-site` 部署历史中选择上一个已验收的生产 deployment，使用该 deployment 的 rollback 操作。不要把旧 SDK 与新 catalog 混用。
 2. 重新核验根路径、catalog、三个归档的 SHA-256、404，以及一次真实播放/取消。
 3. 在发布记录中保留被回滚版本、原因、恢复的 deployment/Git SHA。源码用新的修复提交继续，不重写已对外发布的版本或历史证据。
 

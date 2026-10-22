@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "status": "PARTIAL",
+  "status": "PASS",
   "date": "2026-10-23",
-  "updatedAt": "2026-10-22T18:59:46.249Z",
+  "updatedAt": "2026-10-22T19:05:00.131Z",
   "repository": "https://github.com/mreasonyang/tflip",
   "project": "tflip-site",
   "productionBranch": "main",
@@ -52,16 +52,62 @@
     "previousProject": "tflip",
     "previousDeploymentId": "339baeab-20e4-4099-9aed-61d2eacb13f4",
     "target": "tflip-site.pages.dev",
-    "status": "initializing",
-    "httpsVerification": "pending"
+    "status": "active",
+    "httpsVerification": {
+      "passed": true,
+      "verifiedAt": "2026-10-22T19:01:42.973Z",
+      "sourceCommit": "5e43159c85b534746c47d16927ca7676e7b082d5",
+      "files": 95,
+      "missingDownload": 404,
+      "assetRevision": "f94d810b4f5e2bf0e15a",
+      "releaseManifestSha256": "a435143a7eeade4e65f50d1afae3bed9fa88825d4bacb06ae70ef06dae84d8c9",
+      "verificationReportSha256": "a65842ed6e910746587526b7e8fcb015a8309a8cbabc3b8718358dcff807b598",
+      "rootCacheControl": "no-cache, max-age=0, must-revalidate",
+      "catalogCacheControl": "no-cache, max-age=0, must-revalidate"
+    },
+    "ssl": "enabled",
+    "productionDeploymentId": "2befd91f-ad37-4693-97d4-5397df84083a",
+    "browserVerification": {
+      "verifiedAt": "2026-10-22T19:03:55.593Z",
+      "url": "https://tflip.kyun.si/#integration",
+      "browser": "ChatGPT in-app browser",
+      "locales": [
+        "zh",
+        "en"
+      ],
+      "npmInstallCommand": "npm install @kyun.si/tflip",
+      "copyStatus": "安装命令已复制。",
+      "clipboardReadback": "not tested in this browser session",
+      "generatedCodeImports": "@kyun.si/tflip/dom",
+      "showcaseScenes": 6,
+      "removedLogAndDisclaimerNodes": 0,
+      "play": true,
+      "pause": true,
+      "cancel": true,
+      "temporaryOverlaysAfterCancel": 0,
+      "consoleWarningsAndErrors": [],
+      "screenshot": "test-results/native-git-production-install.png"
+    }
   },
   "automaticPushVerification": {
-    "status": "pending"
+    "status": "success",
+    "sourceCommit": "5e43159c85b534746c47d16927ca7676e7b082d5",
+    "deploymentId": "2befd91f-ad37-4693-97d4-5397df84083a",
+    "providerCheck": "success",
+    "providerCheckCompletedAt": "2026-10-22T19:00:49Z",
+    "providerCheckURL": "https://dash.cloudflare.com/?to=/383e6c555181344833a750bf82b26a32/pages/view/tflip-site/2befd91f-ad37-4693-97d4-5397df84083a",
+    "githubActions": {
+      "runId": 39836214756,
+      "url": "https://github.com/mreasonyang/tflip/actions/runs/39836214756",
+      "status": "success",
+      "releaseManifestSha256": "d382b2b26b6a77765c516dc5938c4cba15bd3b29b2d85d79cbc85e892ca0a9df",
+      "staticAssetsMatchProduction": true
+    }
   },
   "publishedSDK": {
     "name": "@kyun.si/tflip",
     "version": "0.3.2",
     "sha256": "f856dceaf0e2c969d839c006f57b34ebb11242dc2676e76213523626db88798a"
   },
-  "evidenceBoundary": "Initial Git-source deployment, all served file hashes, and browser playback passed. Custom-domain activation and automatic-push verification remain pending."
+  "evidenceBoundary": "PASS covers native main-push deployment and GitHub Actions for source commit 5e43159c85b534746c47d16927ca7676e7b082d5, active custom-domain SSL, all 95 served file hashes, missing-download HTTP 404, and live browser interactions. The final acceptance documentation commit uses [skip ci] and is excluded from static build inputs; it does not change the deployed payload. npm SDK publication remains a separate release step."
 }

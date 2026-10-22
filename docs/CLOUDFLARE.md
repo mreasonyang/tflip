@@ -1,13 +1,13 @@
 # Cloudflare Pages Git deployment
 
-Tflip is moving from the Direct Upload project `tflip` to a native Git-integrated Pages project, following the KeyPin website deployment workflow. The live domain remains `https://tflip.kyun.si/`. Until the new project has passed deployment verification and the domain has been moved, production is still served by `tflip`.
+Tflip uses the native Git-integrated Cloudflare Pages project `tflip-site`, following the KeyPin website deployment workflow. Pushes to `main` build and deploy `https://tflip.kyun.si/` automatically. The former Direct Upload project `tflip` is retained as the migration recovery baseline. Deployment and acceptance evidence is recorded in [native-git-deployment.json](native-git-deployment.json).
 
 ## Build settings
 
 | Setting | Value |
 | --- | --- |
 | GitHub repository | `mreasonyang/tflip` |
-| New Pages project | `tflip-site` |
+| Pages project | `tflip-site` |
 | Production branch | `main` |
 | Framework preset | None |
 | Root directory | Repository root |
@@ -19,11 +19,11 @@ Tflip is moving from the Direct Upload project `tflip` to a native Git-integrate
 
 The build command installs the locked dependencies, runs the existing unit/type/archive checks and creates the complete verified static output. The checked-in npm SDK remains byte-identical to its published registry archive. Only `tailnet-preview/` is deployed; source files, test results and local release receipts stay outside that directory.
 
-Cloudflare may perform its own dependency installation before running this command. Setting `SKIP_DEPENDENCY_INSTALL=1` in the Pages build environment avoids that duplicate step; the script itself always runs `npm ci --ignore-scripts`.
+Both production and preview build environments set `SKIP_DEPENDENCY_INSTALL=1` to avoid Cloudflare's duplicate dependency installation; the script itself always runs `npm ci --ignore-scripts`.
 
 GitHub Actions validates Brave/WebKit and the supported Node versions, then runs the same build command and packages the results. It does not deploy and needs no Cloudflare API token. Native Pages builds and GitHub Actions run independently: a Pages deployment does not wait for the separate browser workflow to finish. Require the relevant checks when reviewing and accepting changes to `main`.
 
-## Connect and migrate
+## Migration procedure
 
 1. In the existing Cloudflare Workers and Pages GitHub App installation, preserve the current repository selection and add only `mreasonyang/tflip`. Confirm the permission grant before saving it.
 2. Create the Git-integrated Pages project `tflip-site` using the settings above. Cloudflare does not support converting a Direct Upload project to Git integration in place.
@@ -42,8 +42,8 @@ Use the actual Pages deployment URL and manifest path. The verifier checks every
 
 ## Routine deployment and recovery
 
-After migration, push reviewed changes to `main`; Cloudflare builds and deploys from Git. Keep npm publication as its separate, explicit release step.
+Push reviewed changes to `main`; Cloudflare builds and deploys from Git. Verify the commit's `Cloudflare Pages` check and its deployment ID, the separate GitHub Actions run, and the public site against that commit's release manifest. Keep npm publication as its separate, explicit release step.
 
-Use the new project's deployment history to roll back to a verified production deployment. For a failed domain cutover, restore `tflip.kyun.si` to the old project and verify it again. Retain its deployment `339baeab-20e4-4099-9aed-61d2eacb13f4` as the pre-migration baseline until the migration is accepted.
+Use `tflip-site`'s deployment history to roll back to a verified production deployment. For a failed domain cutover, restore `tflip.kyun.si` to the old project and verify it again. Its deployment `339baeab-20e4-4099-9aed-61d2eacb13f4` is the retained pre-migration baseline.
 
 References: [GitHub integration](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/), [Direct Upload limitations](https://developers.cloudflare.com/pages/get-started/direct-upload/), [build image and version files](https://developers.cloudflare.com/pages/configuration/build-image/), [custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/).
