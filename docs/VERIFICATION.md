@@ -20,6 +20,7 @@ Brave 必须已安装，或用 `BRAVE_EXECUTABLE` 指定；不存在时明确失
 - 单元与类型：轨迹、DOM 生命周期、回调重入、队列锚点脱离、signal 错误清理、React StrictMode/卸载、粒子、语言/主题与配置复制。
 - 分发：版本/许可证/相对链接、三个归档完整性、同字节 SDK、干净部署输出与 404。
 - 浏览器：Brave 与 Playwright WebKit；桌面及 390px 视口、控制/切镜/焦点/减少动态效果/清理，以及从真实 tarball 独立安装并打包的 Vanilla/React 宿主。
+- 像素确定性：除默认浏览器外，隔离的 Brave CPU Canvas 专项在桌面/窄视口检查切镜和回退寻帧，逐通道差异必须为 0；另覆盖无 `Canvas.reset()` 的兼容路径。该专项固定像素读回配置，不修改用户浏览器。
 - 线上：公开 HTTPS、下载字节、404、UI 与部署 revision 单独读回。
 
 ## 支持边界
@@ -32,6 +33,8 @@ SDK 为浏览器 ESM，React 适配器声明支持 React 18/19，core 和 SSR �
 
 ## 本次结果
 
-2026-10-22，本机 Node 26.11.0 完成 173 项单元/类型/归档检查及 126 项浏览器检查，全部通过、零跳过。浏览器为 Brave Chromium 154.0.8037.98 和 Playwright WebKit 27.2。独立消费者安装、TypeScript、SSR 和两种浏览器宿主均通过，所测 SDK SHA-256 为 `5680a9afcd307a6ab270e33d54006429629545efb4040cfe5f0a4847734d9571`。
+2026-10-22，本机 Node 26.11.0 完成 173 项单元/类型/归档检查及 126 项浏览器检查，全部通过、零跳过。浏览器为 Brave Chromium 154.0.8037.98 和 Playwright WebKit 27.2。独立消费者安装、TypeScript、SSR 和两种浏览器宿主均通过；SDK 另在 Node 20.20.2 无 document/window 的环境中通过 SSR 导入和 React 服务端渲染。所测 SDK SHA-256 为 `5680a9afcd307a6ab270e33d54006429629545efb4040cfe5f0a4847734d9571`。
+
+后续对 Canvas 状态修复和验收回执修复按影响范围完成 57 项浏览器复验（独立示例 24、双镜头及 CPU Canvas 16、消费者 17），全部通过；173 项单元/归档检查也再次通过。移除 Canvas 修复的反证会稳定产生像素差异，恢复修复后差异为 0。
 
 Linux 三个 Node 版本及浏览器矩阵结果由 [GitHub Actions](https://github.com/mreasonyang/tflip/actions) 记录；部署、线上字节与对应 Git SHA 由该版本发布回执记录。上述本地通过不替代 CI、线上或真实手机验收。发布步骤见 [RELEASING.md](RELEASING.md)。

@@ -297,6 +297,10 @@ export function createRoadsterScene(canvas) {
   function render(frame) {
     if(disposed)return;
     if(!frame||!frame.pose)throw new TypeError('Roadster render requires a sampled pose');
+    // Arbitrary seeks must rebuild the frame without retaining the previous
+    // pose's Canvas drawing state or backing-buffer contents.
+    if(typeof context.reset==='function')context.reset();
+    else canvas.width=canvas.width;
     resize();objects=[];
     const pose=frame.pose;
     camera(Number(pose.x)||0);

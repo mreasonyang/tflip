@@ -11,7 +11,8 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const port = Number(process.env.STUNT_PORT ?? 4198), base = `http://127.0.0.1:${port}`;
 const results = `${root}/test-results/two-shot`;
 const engines = testEngines('STUNT_ENGINE');
-const sourceFiles = ['playground/stunt-motion.js', 'playground/stunt-scene.js', 'playground/stunt.js', 'playground/stunt.css', 'playground/index.html', 'playground/roadster-geometry.js', 'playground/ramp-motion.js', 'playground/ramp-scene.js', 'playground/roadster-motion.js', 'playground/roadster-scene.js', 'tests/stunt.e2e.mjs'];
+const softwareCanvasOnly = process.env.STUNT_SOFTWARE_CANVAS_ONLY === '1';
+const sourceFiles = ['playground/stunt-motion.js', 'playground/stunt-scene.js', 'playground/stunt.js', 'playground/stunt.css', 'playground/index.html', 'playground/roadster-geometry.js', 'playground/ramp-motion.js', 'playground/ramp-scene.js', 'playground/roadster-motion.js', 'playground/roadster-scene.js', 'tests/stunt.e2e.mjs', 'tests/helpers/browser.mjs'];
 const evidence = { startedAt: new Date().toISOString(), sources: {}, timeline: { duration: STUNT_DURATION, cut: STUNT_CUT, order: ['ramp', 'roadster'] }, engines: {} };
 const keyframes = [['ramp-approach', 0], ['ramp-climb', 3000], ['ramp-inverted', 4400], ['ramp-recovery', 5500], ['ramp-landed', 7900], ['before-cut', 7999.99], ['cut', 8000], ['after-cut', 8000.01], ['roadster-approach', 8600], ['roadster-jump', 10000], ['roadster-roll', 10900], ['roadster-descent', 12400], ['roadster-rollout', 13400], ['completed', 13800]];
 async function hashes() { const result = {}; for (const file of sourceFiles) result[file] = createHash('sha256').update(await readFile(`${root}/${file}`)).digest('hex'); return result; }
@@ -73,7 +74,7 @@ async function compareOriginal(page, milliseconds) {
 
 test('Tflip two-shot edit, original-camera cuts and browser controls', { timeout: 240000 }, async t => {
   await mkdir(results, { recursive: true }); evidence.sources = await hashes(); const host = await server(); t.after(() => host.kill()); t.after(save);
-  for (const engine of engines) await t.test(engine, { timeout: 115000 }, async t => {
+  for (const engine of softwareCanvasOnly ? [] : engines) await t.test(engine, { timeout: 115000 }, async t => {
     const browser = await launchBrowser(engine); t.after(() => browser.close());
     const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', reducedMotion: 'no-preference' }); t.after(() => context.close());
     await context.addInitScript(() => { const request = window.requestAnimationFrame.bind(window), cancel = window.cancelAnimationFrame.bind(window); window.__stuntFrames = new Set(); window.requestAnimationFrame = fn => { const id = request(time => { window.__stuntFrames.delete(id); fn(time); }); window.__stuntFrames.add(id); return id; }; window.cancelAnimationFrame = id => { window.__stuntFrames.delete(id); cancel(id); }; });
@@ -143,6 +144,57 @@ test('Tflip two-shot edit, original-camera cuts and browser controls', { timeout
       assert.equal(await page.evaluate(() => __stuntFrames.size), 0); assert.equal(await page.locator('#stuntDriver').getAttribute('style'), initialStyle); assert.equal(await page.locator('[data-tflip-particles],[data-tflip-overlay]').count(), 0);
       record.teardown = { frames: 0, driverRestored: true, transientNodes: 0 }; assert.deepEqual(record.errors, []); await save();
     });
+  });
+  if (engines.includes('brave')) await t.test('Brave software Canvas reproduces exact frames after arbitrary seeks', { timeout: 45000 }, async t => {
+    // Linux headless Canvas exposed history-dependent pixels that the macOS
+    // accelerated backend did not. Exercise that backend on every Brave host.
+    const browser = await launchBrowser('brave', { softwareCanvas: true }); t.after(() => browser.close());
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' }); t.after(() => context.close());
+    const page = await context.newPage();
+    const record = evidence.softwareCanvas = { version: browser.version(), errors: [], originalRenderComparisons: [], repeatedFrames: [] };
+    page.on('pageerror', error => record.errors.push(error.message));
+    await page.goto(`${base}/playground/`, { waitUntil: 'load' });
+    await page.waitForFunction(() => document.querySelector('#stuntStage')?.dataset.phase && !document.documentElement.classList.contains('i18n-pending'));
+    await page.evaluate(() => document.fonts.ready);
+    record.readbackCalibration = await page.evaluate(() => {
+      const canvas = document.createElement('canvas'); canvas.width = 128; canvas.height = 64;
+      const context = canvas.getContext('2d'), expected = context.createImageData(canvas.width, canvas.height);
+      for (let i = 0; i < expected.data.length; i += 4) { expected.data[i] = i % 251; expected.data[i + 1] = (i * 3) % 251; expected.data[i + 2] = (i * 7) % 251; expected.data[i + 3] = 255; }
+      context.putImageData(expected, 0, 0);
+      const actual = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let differentChannels = 0;
+      for (let i = 0; i < actual.length; i++) if (actual[i] !== expected.data[i]) differentChannels++;
+      return { channels: actual.length, differentChannels };
+    });
+    assert.equal(record.readbackCalibration.differentChannels, 0, 'The isolated pixel profile must disable Brave readback farbling');
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 }); await settled(page);
+      for (const time of [8000, 10900, 8000, 7999.99, 10900, 3000, 8000, 13800]) {
+        const comparison = await compareOriginal(page, time);
+        record.originalRenderComparisons.push({ width, requestedTime: time, ...comparison });
+        assert.equal(comparison.actualShot, comparison.expectedShot, JSON.stringify(comparison)); assert.ok(comparison.dimensionsMatch);
+        assert.equal(comparison.differentChannels, 0, JSON.stringify(comparison));
+      }
+      // The compatibility branch must preserve the same determinism on Canvas
+      // implementations without reset(), not just on current browser engines.
+      const resetDescriptor = await page.evaluateHandle(() => Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'reset'));
+      try {
+        for (const fallback of [false, true]) {
+          if (fallback) await page.evaluate(() => Object.defineProperty(CanvasRenderingContext2D.prototype, 'reset', { configurable: true, writable: true, value: undefined }));
+          // Disable the method for all internal scene buffers and fresh references.
+          assert.equal(await page.evaluate(() => typeof CanvasRenderingContext2D.prototype.reset === 'undefined'), fallback);
+          await seek(page, 8000); const first = await compareOriginal(page, 8000);
+          await seek(page, 10900); const repeated = await compareOriginal(page, 8000);
+          record.repeatedFrames.push({ width, fallback, firstHash: first.actualHash, repeatedHash: repeated.actualHash });
+          assert.equal(repeated.actualHash, first.actualHash, `History-independent pixels at ${width}px, reset fallback=${fallback}`);
+          assert.equal(repeated.differentChannels, 0, JSON.stringify(repeated));
+        }
+      } finally {
+        await page.evaluate(descriptor => Object.defineProperty(CanvasRenderingContext2D.prototype, 'reset', descriptor), resetDescriptor);
+        await resetDescriptor.dispose();
+      }
+    }
+    assert.deepEqual(record.errors, []); await save();
   });
   evidence.completedAt = new Date().toISOString(); assert.deepEqual(await hashes(), evidence.sources, 'Evidence must cover a frozen source version'); await save();
 });

@@ -19,6 +19,6 @@ Integrate one selected motion without reading the whole Playground. Start with [
 
 [Skill instructions](./tflip/SKILL.md) · [Install / portability](./references/install.md) · [Exported JSON](./references/config.md)
 
-There are eight canonical demos. Legacy `roadster` and `ramp` IDs and recipe URLs both resolve to `stunt`; they do not add separate demos. Current package: `@tflip/motion@0.3.1`. Follow the explicit configuration migration rules for v0.1.0 or v0.2.0 exports.
+There are eight canonical demos. Legacy `roadster` and `ramp` IDs and recipe URLs both resolve to `stunt`; they do not add separate demos. Current package: `@tflip/motion@0.3.1`. Follow the explicit configuration migration rules for older SDK exports.
 
 The SDK, original examples, and integration Skill are MIT licensed. npm publication remains disabled; use the catalog download. A private preview may require the user's tailnet connection. An unreachable page is not evidence that npm has a replacement package. Reduced reading is a design goal, not a measured token guarantee.
