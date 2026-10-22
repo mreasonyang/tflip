@@ -106,6 +106,8 @@ html[lang="en"] .section-heading h2 { font-size: clamp(26px, 2.5vw, 33px); lette
 html[lang="en"] .settings-heading h2 { font-size: 21px; }
 html[lang="en"] .roadster-kicker { letter-spacing: 1px; }
 html[lang="en"] .demo-stage-word { max-width: calc(100% - 80px); }
+/* Chinese glyphs need full-height line boxes, unlike the compact Latin titles. */
+html[lang="zh-CN"] .demo-stage-word { line-height: 1.2; letter-spacing: 0; }
 
 @media (max-width: 850px) {
   .site-header nav { gap: 14px; }
