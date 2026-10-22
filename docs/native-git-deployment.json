@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL",
+  "date": "2026-10-23",
+  "updatedAt": "2026-10-22T18:59:46.249Z",
+  "repository": "https://github.com/mreasonyang/tflip",
+  "project": "tflip-site",
+  "productionBranch": "main",
+  "build": {
+    "command": "bash scripts/cloudflare-build.sh",
+    "outputDirectory": "tailnet-preview",
+    "image": "v3",
+    "node": "26.11.0",
+    "python": "3.13.3",
+    "environment": {
+      "SKIP_DEPENDENCY_INSTALL": "1"
+    }
+  },
+  "githubApp": {
+    "installationId": 174228772,
+    "authorized": true,
+    "addedRepository": "mreasonyang/tflip",
+    "preservedRepositories": [
+      "mreasonyang/keypin-site"
+    ]
+  },
+  "initialDeployment": {
+    "id": "78476326-532c-4689-9e4d-597f187808d2",
+    "sourceCommit": "c38517701f6207627f5a962b29047953b6219eaf",
+    "url": "https://tflip-site.pages.dev/",
+    "providerCheck": "success",
+    "httpVerification": {
+      "passed": true,
+      "files": 95,
+      "assetRevision": "f94d810b4f5e2bf0e15a",
+      "manifestSha256": "daa1cd18f2980913f68b4f401a83c09d7038638426f5f9d929f19d7ec1f81086"
+    },
+    "browserVerification": {
+      "play": true,
+      "pause": true,
+      "cancel": true,
+      "temporaryOverlaysAfterCancel": 0,
+      "npmInstallCommand": "npm install @kyun.si/tflip"
+    }
+  },
+  "sourceCI": {
+    "url": "https://github.com/mreasonyang/tflip/actions/runs/39832609773",
+    "status": "success"
+  },
+  "domain": {
+    "hostname": "tflip.kyun.si",
+    "previousProject": "tflip",
+    "previousDeploymentId": "339baeab-20e4-4099-9aed-61d2eacb13f4",
+    "target": "tflip-site.pages.dev",
+    "status": "initializing",
+    "httpsVerification": "pending"
+  },
+  "automaticPushVerification": {
+    "status": "pending"
+  },
+  "publishedSDK": {
+    "name": "@kyun.si/tflip",
+    "version": "0.3.2",
+    "sha256": "f856dceaf0e2c969d839c006f57b34ebb11242dc2676e76213523626db88798a"
+  },
+  "evidenceBoundary": "Initial Git-source deployment, all served file hashes, and browser playback passed. Custom-domain activation and automatic-push verification remain pending."
+}
