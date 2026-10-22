@@ -30,7 +30,17 @@ function localPath(value, base = kit) {
 test('Tflip catalog exposes eight canonical recipes, aliases and verified local artifacts', async () => {
   const source = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
   assert.equal(catalog.package.version, source.version);
-  assert.equal(catalog.package.published, false);
+  const publication = await readFile(resolve(root, 'npm-publication.json'), 'utf8').then(JSON.parse).catch(error => {
+    if (error.code === 'ENOENT') return undefined;
+    throw error;
+  });
+  const currentPublication = publication?.name === source.name && publication.version === source.version;
+  assert.equal(catalog.package.published, Boolean(currentPublication));
+  if (currentPublication) {
+    assert.equal(publication.sha256, catalog.package.sha256);
+    assert.equal(publication.bytes, catalog.package.bytes);
+    assert.equal(publication.registry, source.publishConfig.registry);
+  }
   assert.equal(catalog.package.name, '@kyun.si/tflip');
   assert.equal(catalog.recipes.length, 8);
   assert.deepEqual(catalog.recipes.map(item => item.id), ['lab', 'orbit', 'portal', 'vinyl', 'candy', 'arcade', 'paper', 'stunt']);

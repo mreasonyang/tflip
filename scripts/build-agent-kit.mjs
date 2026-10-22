@@ -91,6 +91,15 @@ const sdkReadme = (await readFile(join(root, 'docs/SDK_README.md'), 'utf8'))
 await writeFile(join(sdkStage, 'README.md'), sdkReadme);
 const packed = JSON.parse(run('npm', ['pack', '--offline', '--ignore-scripts', '--json', '--cache', join(work, 'npm-cache'), '--pack-destination', join(kit, 'downloads')], sdkStage))[0];
 const sdk = { name: pkg.name, version: pkg.version, ...await artifact(join(kit, 'downloads', packed.filename)), published: false, license: pkg.license };
+// Publication is confirmed by a checked-in registry readback, never inferred
+// from a successful local build or inherited by a different version/archive.
+const publication = await readFile(join(root, 'npm-publication.json'), 'utf8').then(JSON.parse).catch(error => {
+  if (error.code === 'ENOENT') return undefined;
+  throw error;
+});
+sdk.published = publication?.name === sdk.name && publication.version === sdk.version
+  && publication.registry === pkg.publishConfig.registry && publication.bytes === sdk.bytes
+  && publication.sha256 === sdk.sha256;
 
 const recipes = ['lab', 'orbit', 'portal', 'vinyl', 'candy', 'arcade', 'paper', 'stunt'].map(id => ({
   id, kind: id === 'lab' ? 'sdk' : id === 'stunt' ? 'canvas-scene' : 'composition',

@@ -8,7 +8,7 @@
 
 ## 安装
 
-npm 包名为 `@kyun.si/tflip`。版本发布到 npm 后，在自己的项目中运行：
+npm 包名为 `@kyun.si/tflip`。在自己的项目中运行：
 
 ```sh
 npm install @kyun.si/tflip
@@ -18,7 +18,7 @@ npm install @kyun.si/tflip
 import { play } from '@kyun.si/tflip';
 ```
 
-当前 0.3.2 尚待 npm 账号授权后发布，不能把本地打包成功当作 npm 已上线。现在也可下载 catalog 中的 SDK，运行 `npm install --ignore-scripts ./kyun.si-tflip-0.3.2.tgz`；安装后的导入名相同。React 入口为 `@kyun.si/tflip/react`，无需单独安装另一个 Tflip 包。
+当前 0.3.2 已发布到 npm。也可下载 catalog 中的同字节 SDK，运行 `npm install --ignore-scripts ./kyun.si-tflip-0.3.2.tgz`；安装后的导入名相同。React 入口为 `@kyun.si/tflip/react`，无需单独安装另一个 Tflip 包。
 
 ## 本地运行
 

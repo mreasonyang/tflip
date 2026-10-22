@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "name": "@kyun.si/tflip",
+  "version": "0.3.2",
+  "registry": "https://registry.npmjs.org/",
+  "tarball": "https://registry.npmjs.org/@kyun.si/tflip/-/tflip-0.3.2.tgz",
+  "bytes": 29033,
+  "sha256": "f856dceaf0e2c969d839c006f57b34ebb11242dc2676e76213523626db88798a",
+  "integrity": "sha512-VJ7Q+kYY98X1CeElnroqtEUWn6Pioa7ERqT5pVCt4JGw12P0uCAbaI9JCrlC/fwKxX6WFWnrodFPDQMT7hqf1g==",
+  "verifiedAt": "2026-10-22T17:52:55.234Z",
+  "sourceCommit": "537705806d59943880c2eb9ecc5e892ae21b0f02"
+}

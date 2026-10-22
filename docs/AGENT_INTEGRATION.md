@@ -1,6 +1,6 @@
 # Tflip Agent 接入层
 
-当前版本为 `@kyun.si/tflip@0.3.2`。SDK、原创示例和 Skill 使用 MIT 许可证。SDK 支持 npm 公开发布；开发仓库的 `private: true` 不进入 SDK。发布前使用站点的版本化归档，不能将 `catalog.package.published: false` 当成 npm 已上线。线上展示由 Cloudflare Pages 托管，接入文件继续使用相对路径，支持任意部署前缀。
+当前版本为 `@kyun.si/tflip@0.3.2`，已公开发布到 npm，并完成 registry 字节与独立安装验证。SDK、原创示例和 Skill 使用 MIT 许可证；开发仓库的 `private: true` 不进入 SDK。构建只在 `npm-publication.json` 的包名、版本、registry、字节数与 SHA-256 全部匹配时，将 `catalog.package.published` 标为 `true`；新版本不会继承旧版本的发布状态。线上展示由 Cloudflare Pages 托管，接入文件继续使用相对路径，支持任意部署前缀。
 
 ## 用户入口
 
