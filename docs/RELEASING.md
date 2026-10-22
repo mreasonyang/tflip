@@ -2,6 +2,8 @@
 
 源码、SDK 和网站分别校验，所有结果绑定同一个 Git revision。当前由 GitHub 保存源码，Cloudflare Pages 托管 `tflip.kyun.si`；npm 包名为 `@kyun.si/tflip`，由拥有 `kyun.si` scope 发布权限的账号公开发布。
 
+网站正在迁移到 Cloudflare Pages 原生 GitHub 集成，配置和切换步骤见 [Cloudflare 部署](CLOUDFLARE.md)。迁移验收完成前，生产仍由原 Direct Upload 项目 `tflip` 提供；完成后由 Git 集成项目在 `main` 推送时自动部署。GitHub Actions 负责验证与打包，不保存 Cloudflare 发布 token，也不代替原生构建状态。
+
 ## 生成候选版本
 
 1. 使用 `.node-version` 中的 Node，运行 `npm ci --ignore-scripts`。安装 Brave 和匹配当前 Playwright 的 WebKit：`npx --no-install playwright install webkit`。Linux CI 使用官方 Brave 软件源及 Playwright `--with-deps`。

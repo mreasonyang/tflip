@@ -74,8 +74,11 @@ jobs:
         with:
           node-version: '26.11.0'
           cache: npm
-      - run: npm ci --ignore-scripts
-      - run: npm run preview:sync
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: '.python-version'
+      - name: Build the Cloudflare Pages output
+        run: bash scripts/cloudflare-build.sh
       - run: node scripts/release-artifacts.mjs
       - uses: actions/upload-artifact@v5
         with:
