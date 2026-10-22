@@ -1,0 +1,135 @@
+/* Keep language changes from scrolling the page or replacing control nodes. */
+html, body, .page-shell { overflow-anchor: none; }
+body { padding-bottom: 72px; }
+
+.language-picker {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 24px);
+  padding: 7px 10px 7px 13px;
+  border: 1px solid #bdb6ce;
+  border-radius: 10px;
+  background: #fffdf8;
+  color: #3d3450;
+  box-shadow: 0 4px 20px #191a2220;
+  font-size: 11px;
+}
+.language-picker label { font-weight: 650; }
+.language-picker select {
+  max-width: 170px;
+  min-height: 32px;
+  padding: 5px 25px 5px 8px;
+  border: 1px solid #d9d1e5;
+  border-radius: 5px;
+  background: #f5f1fb;
+  color: inherit;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+/* Text-only spans must not inherit styles intended for adjacent icons/badges. */
+.nav-cta > .i18n-text,
+.roadster-hero-play > .i18n-text,
+.segmented button > .i18n-text,
+.sequence-button > .i18n-text,
+.panel-title h2 > .i18n-text,
+legend > .i18n-text,
+.business-note > .i18n-text,
+.site-footer > span > .i18n-text {
+  display: inline;
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+.roadster-kicker > .i18n-text,
+.ramp-heading .roadster-kicker > .i18n-text {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.live-badge > .i18n-text {
+  display: inline;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+
+.roadster-heading > div:first-child,
+.ramp-heading > div:first-child,
+.section-heading > div,
+.integration-copy,
+.code-panel { min-width: 0; }
+.roadster-heading h1 { white-space: normal; }
+.roadster-kicker { flex-wrap: wrap; row-gap: 8px; }
+.roadster-source, .roadster-caption, .roadster-status-row,
+.field-help, .business-note, .settings-bottom, .code-footnote {
+  overflow-wrap: anywhere;
+}
+.roadster-caption strong { white-space: normal; flex-shrink: 0; max-width: 40%; }
+.roadster-status-row > span { min-width: 0; }
+.roadster-scene-label, .ramp-legend { gap: 12px; }
+.roadster-scene-label > span { text-align: right; }
+.stage-footer > span:first-child { min-width: 0; max-width: 78%; }
+.timeline input { min-width: 36px; }
+.transport-main { flex-wrap: wrap; }
+.transport-buttons { flex-shrink: 0; }
+.sequence-button { white-space: nowrap; }
+.playback-summary, .playback-summary > span:first-child { flex-wrap: wrap; }
+.panel-title { gap: 12px; align-items: flex-start; }
+.panel-title h2 { flex-wrap: wrap; row-gap: 4px; }
+.panel-title .text-button { flex-shrink: 0; }
+.settings-heading { gap: 12px; }
+.settings-heading > div { min-width: 0; }
+.settings-heading h2 { overflow-wrap: anywhere; }
+.label-action { gap: 10px; }
+.label-action > label { min-width: 0; }
+.label-action > button { flex-shrink: 0; }
+.advanced summary > span { min-width: 0; flex-wrap: wrap; row-gap: 4px; }
+.phase-fields label { overflow-wrap: anywhere; }
+.demo-actions, .demo-options { flex-wrap: wrap; }
+.demo-play { white-space: normal; }
+.demo-status { min-width: 0; overflow-wrap: anywhere; }
+.integration-tags { flex-wrap: wrap; }
+.site-footer > span { min-width: 0; overflow-wrap: anywhere; }
+
+html[lang="en"] .section-heading h2 { font-size: clamp(26px, 2.5vw, 33px); letter-spacing: -1px; }
+html[lang="en"] .settings-heading h2 { font-size: 21px; }
+html[lang="en"] .roadster-kicker { letter-spacing: 1px; }
+html[lang="en"] .demo-stage-word { max-width: calc(100% - 80px); }
+
+@media (max-width: 850px) {
+  .site-header nav { gap: 14px; }
+  .section-heading { gap: 22px; }
+  .section-heading > p { max-width: 43%; }
+  .transport-main { column-gap: 10px; row-gap: 12px; }
+}
+@media (max-width: 650px) {
+  .language-picker { right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); gap: 7px; padding: 5px 7px 5px 10px; font-size: 10px; }
+  .language-picker select { font-size: 10px; max-width: 155px; }
+  .section-heading > p { max-width: none; }
+  .roadster-source { flex-wrap: wrap; row-gap: 5px; }
+  .roadster-caption strong { max-width: none; }
+  .roadster-settings { flex-wrap: wrap; row-gap: 10px; }
+  .roadster-settings label { min-width: 0; }
+  .stage-topline { flex-wrap: wrap; row-gap: 10px; }
+  .live-badge { margin-left: auto; }
+  .stage-footer > span:first-child { max-width: 100%; }
+  .roadster-scene-label { letter-spacing: .5px; }
+  .ramp-legend { letter-spacing: 0; }
+  .code-footnote { flex-wrap: wrap; }
+}
+@media (max-width: 380px) {
+  .site-header nav > a:first-child { display: none; }
+  .effect-toggles { gap: 18px; }
+  .timeline { column-gap: 7px; }
+}

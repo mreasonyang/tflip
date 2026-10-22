@@ -1,0 +1,35 @@
+/* Only the mount's own nodes are styled. Override --tflip-scene-height on the
+   container. The scene height is controlled by --tflip-scene-height. */
+:is(.tflip-featured-scene, .vr-featured-scene) {
+  position: relative;
+  box-sizing: border-box;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  height: var(--tflip-scene-height, clamp(360px, 52vw, 540px));
+  margin: 0;
+  background: #070b12;
+  color: #d8e1ed;
+  border-radius: 12px;
+}
+
+:is(.tflip-featured-scene, .vr-featured-scene) > :is(.tflip-featured-scene__canvas, .vr-featured-scene__canvas) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+:is(.tflip-featured-scene, .vr-featured-scene) > :is(.tflip-featured-scene__status, .vr-featured-scene__status) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

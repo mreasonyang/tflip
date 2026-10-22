@@ -1,0 +1,429 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tflip portable handoff configuration",
+  "description": "Data only; never execute values as code. Resolve element bindings in the consuming app. Viewport points and measured emitter offsets need adaptation to its layout.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sdkVersion",
+    "demo",
+    "framework",
+    "config"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sdkVersion": {
+      "enum": [
+        "0.3.1",
+        "0.3.0",
+        "0.2.1",
+        "0.2.0",
+        "0.1.0"
+      ],
+      "description": "0.3.1 is current. Earlier versions are recognized only for explicit migration; preserve the original and upgrade sdkVersion before current execution."
+    },
+    "demo": {
+      "description": "Eight canonical IDs. roadster and ramp are deprecated aliases for stunt.",
+      "enum": [
+        "lab",
+        "orbit",
+        "portal",
+        "vinyl",
+        "candy",
+        "arcade",
+        "paper",
+        "stunt",
+        "roadster",
+        "ramp"
+      ]
+    },
+    "framework": {
+      "enum": [
+        "auto",
+        "vanilla",
+        "react"
+      ]
+    },
+    "config": {
+      "type": "object"
+    }
+  },
+  "if": {
+    "properties": {
+      "demo": {
+        "const": "lab"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "config": {
+        "$ref": "#/$defs/lab"
+      }
+    }
+  },
+  "else": {
+    "properties": {
+      "config": {
+        "$ref": "#/$defs/scene"
+      }
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      }
+    },
+    "anchors": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "wrapper"
+          ],
+          "properties": {
+            "kind": {
+              "const": "wrapper"
+            },
+            "wrapper": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "from",
+            "to",
+            "wrapper"
+          ],
+          "properties": {
+            "kind": {
+              "const": "selectors"
+            },
+            "from": {
+              "type": "string",
+              "minLength": 1
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1
+            },
+            "wrapper": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "from",
+            "to",
+            "wrapper"
+          ],
+          "properties": {
+            "kind": {
+              "const": "viewport"
+            },
+            "from": {
+              "$ref": "#/$defs/point"
+            },
+            "to": {
+              "$ref": "#/$defs/point"
+            },
+            "wrapper": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "motion": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preset": {
+          "enum": [
+            "launch",
+            "gentle",
+            "snappy",
+            "float"
+          ]
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "turns": {
+          "type": "number",
+          "minimum": 0
+        },
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "axis": {
+          "enum": [
+            "x",
+            "y",
+            "z"
+          ]
+        },
+        "bounce": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "depth": {
+          "type": "number"
+        },
+        "path": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/point"
+          }
+        },
+        "pathMode": {
+          "enum": [
+            "linear",
+            "smooth"
+          ]
+        },
+        "phases": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "anticipation": {
+              "type": "number",
+              "minimum": 0
+            },
+            "launch": {
+              "type": "number",
+              "minimum": 0
+            },
+            "roll": {
+              "type": "number",
+              "minimum": 0
+            },
+            "descent": {
+              "type": "number",
+              "minimum": 0
+            },
+            "settle": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "speed": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "perspective": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "repeat": {
+          "enum": [
+            "replace",
+            "ignore",
+            "queue"
+          ]
+        },
+        "layout": {
+          "enum": [
+            "cancel",
+            "freeze",
+            "follow"
+          ]
+        },
+        "reducedMotion": {
+          "enum": [
+            "system",
+            "always",
+            "never"
+          ]
+        },
+        "shadow": {
+          "type": "boolean"
+        },
+        "backface": {
+          "enum": [
+            "visible",
+            "hidden"
+          ]
+        }
+      }
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "jet": {
+          "type": "boolean"
+        },
+        "trail": {
+          "type": "boolean"
+        },
+        "color": {
+          "type": "string"
+        },
+        "density": {
+          "type": "number",
+          "minimum": 0
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0
+        },
+        "seed": {
+          "type": "number"
+        },
+        "emitter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "offset": {
+              "$ref": "#/$defs/point"
+            },
+            "direction": {
+              "$ref": "#/$defs/point"
+            },
+            "rotate": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "lab": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "motion",
+        "anchors",
+        "size",
+        "effects"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "transfer",
+            "in-place"
+          ]
+        },
+        "motion": {
+          "$ref": "#/$defs/motion"
+        },
+        "anchors": {
+          "$ref": "#/$defs/anchors"
+        },
+        "effects": {
+          "$ref": "#/$defs/effects"
+        },
+        "size": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "in-place"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "anchors": {
+            "properties": {
+              "kind": {
+                "const": "wrapper"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "anchors": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "selectors",
+                  "viewport"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "scene": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jet",
+        "speed"
+      ],
+      "properties": {
+        "jet": {
+          "type": "boolean"
+        },
+        "speed": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    }
+  }
+}

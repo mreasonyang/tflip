@@ -1,0 +1,9 @@
+# Tflip
+
+Portable motion SDK and reusable visual demos. MIT licensed; download the versioned SDK from the catalog (not published to npm).
+
+- [Start here](./agent/index.md): choose one integration recipe.
+- [Version and downloads](./agent/catalog.json): relative artifact paths and SHA-256 digests.
+- [Agent skill](./agent/tflip/SKILL.md): integration workflow and on-demand references.
+
+Resolve relative links against this document's actual URL, including any deployment prefix.

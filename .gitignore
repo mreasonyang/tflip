@@ -1,0 +1,23 @@
+node_modules/
+dist/
+*.tgz
+test-results/
+.DS_Store
+tailnet-preview/
+agent/runtime/
+agent/downloads/
+agent/catalog.json
+agent/examples/featured/roadster-scene.js
+agent/examples/featured/roadster-geometry.js
+agent/examples/featured/ramp-scene.js
+agent/examples/featured/ramp-motion.js
+
+agent/examples/featured/stunt-motion.js
+agent/examples/featured/stunt-scene.js
+agent/examples/featured/roadster-motion.js
+
+# Local research media and operator-only working material
+reference/
+.env
+.env.*
+release-artifacts/

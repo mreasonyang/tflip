@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tflip · 独立消费者验收</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">TFLIP · PACKAGE CONSUMER</p><h1>真实宿主中的动效</h1><p>从 SDK 压缩包独立安装。业务按钮保持可交互，装饰效果随播放生命周期清理。</p></header>
+    <div class="preferences"><label><input id="force-reduced" type="checkbox"> 预览减少动态效果</label><span id="system-preference"></span></div>
+    <section aria-labelledby="vanilla-title">
+      <div class="section-heading"><h2 id="vanilla-title">原生 DOM</h2><span>独立业务节点 · 专用运动包裹</span></div>
+      <div id="vanilla-stage" class="stage">
+        <div id="vanilla-wrapper" class="motion-wrapper"><button id="vanilla-business" class="business" style="transform: rotate(-3deg)">业务操作 <span id="vanilla-count">0</span></button></div>
+        <div id="vanilla-target" class="target">转移终点</div>
+      </div>
+      <div class="controls">
+        <button id="vanilla-play">播放</button><button id="vanilla-transfer">装饰转移</button><button id="vanilla-pause">暂停</button><button id="vanilla-resume">继续</button><button id="vanilla-queue">排队</button><button id="vanilla-cancel">取消全部</button>
+      </div>
+      <details><summary>生命周期回归场景</summary><div class="controls"><button id="land-seek">落地时回到中点</button><button id="land-pause">落地时暂停</button><button id="queue-detach">排队目标移除</button><button id="invalid-signal">无效 signal</button></div></details>
+    </section>
+    <section aria-labelledby="react-title">
+      <div class="section-heading"><h2 id="react-title">React StrictMode</h2><div class="controls"><button id="react-mount">挂载</button><button id="react-unmount">卸载</button></div></div>
+      <div id="react-root"></div>
+    </section>
+    <section class="diagnostics" aria-labelledby="diagnostics-title"><h2 id="diagnostics-title">运行状态</h2><pre id="status" aria-live="polite">正在加载独立消费者…</pre><a href="./fixture-evidence.json">安装、构建与 SSR 证据</a></section>
+  </main>
+  <script type="module" src="./consumer.js"></script>
+</body>
+</html>

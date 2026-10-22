@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tflip · Vanilla example</title>
+  <style>
+    *{box-sizing:border-box}body{font:15px/1.65 system-ui,sans-serif;background:#f6f7ef;color:#2d4434;margin:0;padding:40px 24px}main{max-width:860px;margin:auto}a{color:inherit}h1{line-height:1.2;font-size:36px;font-weight:600;margin:28px 0 12px}p{color:#6f7f65}button{font:inherit;padding:9px 15px;background:#35573b;color:white;border:0;border-radius:7px;cursor:pointer}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #dc884a;outline-offset:4px}.stage{display:flex;align-items:center;justify-content:space-between;gap:25px;min-height:340px;padding:150px 35px 35px;background:#e6eddb;border:1px solid #cbd7bd;border-radius:15px;margin:27px 0}.card{width:150px;height:96px;background:#fbfff4;border:1px solid #b7c9a5;border-radius:12px;padding:16px;box-shadow:0 8px 20px #314d2912;font-weight:600;font-size:14px;display:flex;flex-direction:column;justify-content:space-between}.card small{font:9px ui-monospace,monospace;color:#81966d}.target{height:96px;width:150px;border:1px dashed #a0b38b;border-radius:12px;display:grid;place-items:center;color:#82966f;font-size:12px}.wrapper{width:150px;height:96px}.source-label{font:10px ui-monospace,monospace;color:#7d916b;margin-top:10px;display:block}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:9px}.secondary{background:#e6edda;color:#44633c;border:1px solid #c8d5b8}label{font-size:12px;display:flex;align-items:center;gap:8px;margin:20px 0}input{accent-color:#607f46;flex:1}output{font:12px ui-monospace,monospace}.note{font-size:12px;line-height:1.8}.log{padding:15px;background:#edf1e4;border-radius:8px;min-height:80px;font:12px/1.8 ui-monospace,monospace;color:#5a754a;white-space:pre-wrap}code{background:#e6edda;border-radius:3px;padding:1px 4px}#error{color:#a34424}@media(max-width:520px){body{padding:26px 18px}h1{font-size:29px}.stage{padding:140px 16px 25px;gap:10px}.card,.target,.wrapper{width:125px}.card{font-size:12px;padding:13px}button{font-size:12px;padding:9px 12px}}
+  </style>
+</head>
+<body>
+  <main>
+    <a href="../playground/">← 返回 Playground</a>
+    <h1>一个函数，一段飞行。</h1>
+    <p>零框架接入示例：跨区域装饰视觉、专用包裹层、可控的播放生命周期。</p>
+    <div class="stage"><div><div class="wrapper" id="motionWrapper"><div class="card" id="source"><span>Ready to roll ↗</span><small>APPLICATION CONTENT</small></div></div><span class="source-label">SOURCE / ORIGINAL ELEMENT</span></div><div><div class="target" id="target">Landing zone ＋</div><span class="source-label">TARGET / ANCHOR</span></div></div>
+    <div class="controls"><button id="transfer">跨区域飞行 ↗</button><button id="inPlace" class="secondary">原地翻滚</button><button id="pause" class="secondary" disabled>暂停 / 继续</button><button id="cancel" class="secondary" disabled>取消</button><button id="replay" class="secondary" disabled>重播</button></div>
+    <label for="progress">时间轴<input id="progress" type="range" min="0" max="100" value="0" step="0.1" disabled><output id="percentage">0%</output></label>
+    <div class="log" id="log" aria-live="polite">准备就绪。选择一种运动方式。</div>
+    <p id="error" role="alert"></p>
+    <p class="note">跨区域模式每次创建新的装饰卡片，源元素保持在原位。原地模式只操作专用包裹层，业务子元素可以继续使用自己的 <code>transform</code>。系统开启减少动态效果时，动画直接完成。</p>
+    <p class="note"><code>playback.finished</code> 始终返回完成或取消结果。业务任务是否成功，应独立管理。此页面只演示动效，没有执行 AI 任务。</p>
+  </main>
+  <script type="module">
+    import { play } from '../dist/dom/index.js';
+    import { createParticles } from '../dist/effects/index.js';
+
+    const $ = (id) => document.getElementById(id);
+    const live = new Set();
+    let playback;
+    function createVisual() {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.textContent = 'Ready to roll ↗';
+      return card; // Fresh, detached decorative node; never a live application node.
+    }
+    function update(controller) {
+      if (playback !== controller) return;
+      $('progress').value = String(controller.progress * 100);
+      $('percentage').textContent = `${Math.round(controller.progress * 100)}%`;
+      const settled = ['finished', 'cancelled'].includes(controller.status);
+      $('pause').disabled = settled;
+      $('cancel').disabled = settled;
+      $('progress').disabled = settled;
+      $('replay').disabled = false;
+      $('pause').textContent = controller.status === 'paused' ? '继续' : '暂停';
+    }
+    function attach(controller) {
+      playback = controller;
+      live.add(controller);
+      $('log').textContent = '';
+      const subscriptions = ['start', 'land', 'finish', 'cancel'].map(type => controller.on(type, event => {
+        $('log').textContent += `${type}${event.result?.reason ? ` · ${event.result.reason}` : ''}\n`;
+        update(controller);
+      }));
+      subscriptions.push(controller.on('update', () => update(controller)));
+      update(controller);
+      controller.finished.then(result => {
+        live.delete(controller);
+        subscriptions.forEach(stop => stop());
+        update(controller);
+        if (result.status === 'cancelled' && result.error) $('error').textContent = String(result.error);
+      });
+    }
+    function launch(mode) {
+      try {
+        $('error').textContent = '';
+        // Both buttons own the same demo, so explicitly clear the other mode.
+        for (const controller of live) controller.cancel('replaced');
+        const rect = $('source').getBoundingClientRect();
+        attach(play({
+          ...(mode === 'transfer' ? {
+            mode, from: $('source'), to: $('target'), visual: createVisual,
+            size: { width: rect.width, height: rect.height },
+          } : { mode: 'in-place', element: $('motionWrapper') }),
+          preset: 'launch', height: 130, duration: 2600,
+          reducedMotion: 'system', layout: 'cancel', shadow: true,
+          effects: createParticles({ jet: true, trail: true, seed: 7 }),
+        }));
+      } catch (error) { $('error').textContent = String(error); }
+    }
+    $('transfer').addEventListener('click', () => launch('transfer'));
+    $('inPlace').addEventListener('click', () => launch('in-place'));
+    $('pause').addEventListener('click', () => { if (playback.status === 'paused') playback.resume(); else playback.pause(); update(playback); });
+    $('cancel').addEventListener('click', () => playback.cancel());
+    $('replay').addEventListener('click', () => { try { attach(playback.replay()); } catch (error) { $('error').textContent = String(error); } });
+    $('progress').addEventListener('input', () => { playback.pause(); playback.seek(Number($('progress').value) / 100); update(playback); });
+    window.addEventListener('pagehide', () => { for (const controller of live) controller.dispose(); }, { once: true });
+  </script>
+</body>
+</html>

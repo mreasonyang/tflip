@@ -1,0 +1,79 @@
+name: Verify release
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.22.2', '24.15.0', '26.11.0']
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [brave, webkit]
+    env:
+      TFLIP_TEST_ENGINES: ${{ matrix.engine }}
+      BRAVE_EXECUTABLE: /usr/bin/brave-browser
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '26.11.0'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Install Brave from its official repository
+        if: matrix.engine == 'brave'
+        run: |
+          sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+          sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
+          sudo apt-get update
+          sudo apt-get install -y brave-browser
+      - name: Install Playwright WebKit and system dependencies
+        if: matrix.engine == 'webkit'
+        run: npx --no-install playwright install --with-deps webkit
+      - run: npm run build:agent
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: browser-${{ matrix.engine }}
+          path: |
+            test-results/**/*.json
+            test-results/**/*.png
+          retention-days: 14
+  package:
+    needs: [unit, browser]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '26.11.0'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run preview:sync
+      - run: node scripts/release-artifacts.mjs
+      - uses: actions/upload-artifact@v5
+        with:
+          name: tflip-release-${{ github.sha }}
+          path: release-artifacts/
+          retention-days: 30

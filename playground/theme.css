@@ -1,0 +1,389 @@
+/* Theme colors only. The preference controls and scene layouts live elsewhere.
+   Explicit data-theme wins over the system fallback, including before JS loads. */
+:root {
+  color-scheme: light;
+  --theme-page: #f4f2ed;
+  --theme-surface: #fffdf8;
+  --theme-surface-alt: #eeeaf3;
+  --theme-surface-hover: #e4dff0;
+  --theme-surface-selected: #e1dcff;
+  --theme-text: #292733;
+  --theme-muted: #625c70;
+  --theme-subtle: #686071;
+  --theme-line: #d4cddc;
+  --theme-control-border: #82788e;
+  --theme-accent: #5145cd;
+  --theme-accent-hover: #4134b5;
+  --theme-on-accent: #ffffff;
+  --theme-accent-shadow: #37309b;
+  --theme-warm: #9b4428;
+  --theme-disabled-bg: #e5e0e9;
+  --theme-disabled-text: #696172;
+  --theme-stage: #e9e5f0;
+  --theme-stage-grid: #77648d33;
+  --theme-stage-guide: #7e6b95;
+  --theme-target: #f2edf8;
+  --theme-card: #fffdf8;
+  --theme-card-border: #8a7b9f;
+  --theme-card-shadow: 0 7px 0 -3px #b3a4d3, 0 16px 27px #3d2b5c21;
+  --theme-motion-shadow: #23193d52;
+  --theme-return-card: #ffeadf;
+  --theme-return-border: #ab715c;
+  --theme-return-mark: #97452d;
+  --theme-warning-bg: #fff0e7;
+  --theme-warning-text: #8b361d;
+  --theme-warning-border: #b96b40;
+  --theme-code: #eeebf4;
+  --theme-code-text: #3b3054;
+  --theme-floating-shadow: 0 4px 24px #191a222b;
+  --theme-demo-orbit: #3349a0;
+  --theme-demo-portal: #704195;
+  --theme-demo-vinyl: #9b421c;
+  --theme-demo-candy: #91365f;
+  --theme-demo-arcade: #694196;
+  --theme-demo-paper: #34558d;
+  /* Keep existing base rules on the same semantic palette. */
+  --paper: var(--theme-page);
+  --ink: var(--theme-text);
+  --muted: var(--theme-muted);
+  --line: var(--theme-line);
+  --blue: var(--theme-accent);
+  --white: var(--theme-surface);
+  color: var(--theme-text);
+  background-color: var(--theme-page);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --theme-page: #101218;
+  --theme-surface: #191c25;
+  --theme-surface-alt: #212430;
+  --theme-surface-hover: #2e3242;
+  --theme-surface-selected: #393358;
+  --theme-text: #f1eee8;
+  --theme-muted: #b8b1c5;
+  --theme-subtle: #a9a1b9;
+  --theme-line: #3c3b4b;
+  --theme-control-border: #777386;
+  --theme-accent: #b4a5ff;
+  --theme-accent-hover: #c8bcff;
+  --theme-on-accent: #211942;
+  --theme-accent-shadow: #7665b5;
+  --theme-warm: #ffb090;
+  --theme-disabled-bg: #292b36;
+  --theme-disabled-text: #aba4b6;
+  --theme-stage: #1d202c;
+  --theme-stage-grid: #b6a8d933;
+  --theme-stage-guide: #a79bbd;
+  --theme-target: #272533;
+  --theme-card: #2b2c3c;
+  --theme-card-border: #a79aba;
+  --theme-card-shadow: 0 7px 0 -3px #655b85, 0 16px 27px #00000073, inset 0 0 0 1px #d6c7ff1f;
+  --theme-motion-shadow: #bcaeff47;
+  --theme-return-card: #392923;
+  --theme-return-border: #bd917b;
+  --theme-return-mark: #ffc1a2;
+  --theme-warning-bg: #38271f;
+  --theme-warning-text: #ffc2a7;
+  --theme-warning-border: #b0785f;
+  --theme-code: #14151e;
+  --theme-code-text: #ddd3f4;
+  --theme-floating-shadow: 0 4px 24px #00000073;
+  --theme-demo-orbit: #a6b8ff;
+  --theme-demo-portal: #cdaeff;
+  --theme-demo-vinyl: #ffb291;
+  --theme-demo-candy: #f6b1d0;
+  --theme-demo-arcade: #c6b4ff;
+  --theme-demo-paper: #b0c0ff;
+}
+
+/* Script-free fallback uses the exact explicit-dark palette. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --theme-page: #101218;
+    --theme-surface: #191c25;
+    --theme-surface-alt: #212430;
+    --theme-surface-hover: #2e3242;
+    --theme-surface-selected: #393358;
+    --theme-text: #f1eee8;
+    --theme-muted: #b8b1c5;
+    --theme-subtle: #a9a1b9;
+    --theme-line: #3c3b4b;
+    --theme-control-border: #777386;
+    --theme-accent: #b4a5ff;
+    --theme-accent-hover: #c8bcff;
+    --theme-on-accent: #211942;
+    --theme-accent-shadow: #7665b5;
+    --theme-warm: #ffb090;
+    --theme-disabled-bg: #292b36;
+    --theme-disabled-text: #aba4b6;
+    --theme-stage: #1d202c;
+    --theme-stage-grid: #b6a8d933;
+    --theme-stage-guide: #a79bbd;
+    --theme-target: #272533;
+    --theme-card: #2b2c3c;
+    --theme-card-border: #a79aba;
+    --theme-card-shadow: 0 7px 0 -3px #655b85, 0 16px 27px #00000073, inset 0 0 0 1px #d6c7ff1f;
+    --theme-motion-shadow: #bcaeff47;
+    --theme-return-card: #392923;
+    --theme-return-border: #bd917b;
+    --theme-return-mark: #ffc1a2;
+    --theme-warning-bg: #38271f;
+    --theme-warning-text: #ffc2a7;
+    --theme-warning-border: #b0785f;
+    --theme-code: #14151e;
+    --theme-code-text: #ddd3f4;
+    --theme-floating-shadow: 0 4px 24px #00000073;
+    --theme-demo-orbit: #a6b8ff;
+    --theme-demo-portal: #cdaeff;
+    --theme-demo-vinyl: #ffb291;
+    --theme-demo-candy: #f6b1d0;
+    --theme-demo-arcade: #c6b4ff;
+    --theme-demo-paper: #b0c0ff;
+  }
+}
+
+/* Page chrome and readable secondary copy in both themes. */
+:root body { color: var(--theme-text); background-color: var(--theme-page); }
+:root .site-header .nav-cta { border-color: var(--theme-control-border); }
+:root .site-header nav a:hover { color: var(--theme-accent); }
+:root .site-header .nav-cta:hover { background-color: var(--theme-surface-hover); }
+:root .section-heading .eyebrow,
+:root .section-heading > p,
+:root .version-tag,
+:root .site-footer,
+:root .integration-copy .eyebrow,
+:root .integration-copy > p:not(.eyebrow) { color: var(--theme-muted); }
+:root .footer-divider { color: var(--theme-subtle); }
+:root .integration-tags span { color: var(--theme-muted); border-color: var(--theme-control-border); }
+
+/* Featured scene UI follows the page. The canvas and its overlay artwork keep
+   their deliberately dark scene palette regardless of the chosen theme. */
+:root .roadster-feature,
+:root .ramp-feature { color: var(--theme-text); background: var(--theme-surface); border-color: var(--theme-line); }
+:root .roadster-heading,
+:root .ramp-heading { background: var(--theme-surface); }
+:root .roadster-heading h1,
+:root .ramp-heading h2 { color: var(--theme-text); }
+:root .roadster-heading h1 em { color: var(--theme-accent); }
+:root .ramp-heading h2 em { color: var(--theme-warm); }
+:root .roadster-kicker,
+:root .roadster-subtitle,
+:root .roadster-source { color: var(--theme-muted); }
+:root .roadster-kicker > span:not(.i18n-text) { background: var(--theme-accent); color: var(--theme-on-accent); }
+:root .ramp-heading .roadster-kicker > span:not(.i18n-text) { background: var(--theme-warm); color: var(--theme-surface); }
+:root .roadster-source a { color: var(--theme-accent); }
+:root .roadster-source a:hover { color: var(--theme-accent-hover); }
+:root .roadster-hero-play,
+:root .ramp-heading .roadster-hero-play,
+:root .roadster-toolbar .roadster-play,
+:root .ramp-feature .roadster-play {
+  color: var(--theme-on-accent);
+  background: var(--theme-accent);
+  border-color: var(--theme-accent);
+}
+:root .roadster-hero-play:hover,
+:root .ramp-heading .roadster-hero-play:hover,
+:root .roadster-toolbar .roadster-play:hover:not(:disabled) {
+  color: var(--theme-on-accent);
+  background: var(--theme-accent-hover);
+  border-color: var(--theme-accent-hover);
+}
+:root .roadster-controls,
+:root .ramp-feature .roadster-controls { background: var(--theme-surface-alt); border-color: var(--theme-line); }
+:root .roadster-toolbar button { color: var(--theme-text); border-color: var(--theme-control-border); }
+:root .roadster-toolbar button:hover:not(:disabled) { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
+/* Repeat the primary fill after the generic toolbar hover rule. */
+:root .roadster-toolbar .roadster-play:hover:not(:disabled) { background: var(--theme-accent-hover); }
+:root .roadster-settings label,
+:root .roadster-timeline,
+:root .roadster-status-row { color: var(--theme-muted); }
+:root .roadster-status-row #roadsterStatus,
+:root .roadster-status-row #rampStatus,
+:root .roadster-status-row #stuntStatus { color: var(--theme-text); }
+:root .roadster-caption,
+:root .ramp-feature .roadster-caption { background: var(--theme-surface); color: var(--theme-muted); border-color: var(--theme-line); }
+:root .roadster-caption strong { color: var(--theme-text); }
+
+/* Lab panels, playback controls, metadata and event log. */
+:root .laboratory,
+:root .settings-panel,
+:root .event-panel { color: var(--theme-text); background: var(--theme-surface); }
+:root .stage-topline,
+:root .transport-panel { background: var(--theme-surface); border-color: var(--theme-line); }
+:root .segmented { background: var(--theme-surface-alt); }
+:root .segmented button { color: var(--theme-muted); }
+:root .segmented button span:not(.i18n-text) { color: var(--theme-subtle); }
+:root .segmented button:hover { background: var(--theme-surface-hover); }
+:root .segmented button.selected { background: var(--theme-surface-selected); color: var(--theme-accent); box-shadow: inset 0 0 0 1px var(--theme-accent); }
+:root .live-badge { color: var(--theme-muted); }
+:root .launch-button { background: var(--theme-accent); color: var(--theme-on-accent); box-shadow: 0 3px 0 var(--theme-accent-shadow); }
+:root .launch-button:hover { background: var(--theme-accent-hover); }
+:root .icon-button { border-color: var(--theme-control-border); color: var(--theme-text); }
+:root .icon-button:hover:enabled { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
+:root .sequence-button { color: var(--theme-text); border-color: var(--theme-control-border); }
+:root .sequence-button > span:not(.i18n-text) { color: var(--theme-warm); }
+:root .sequence-button:hover { color: var(--theme-accent); border-color: var(--theme-accent); }
+:root .timeline label,
+:root .timeline > span,
+:root .playback-summary,
+:root .panel-title h2 span:not(.i18n-text),
+:root .event-log time,
+:root .event-log .event-description,
+:root .event-log .empty-log,
+:root .business-note,
+:root .business-note span { color: var(--theme-muted); }
+:root .timeline output,
+:root .playback-summary strong,
+:root .event-log .event-name { color: var(--theme-accent); }
+:root .event-log .event-name.cancel { color: var(--theme-warm); }
+:root .event-log { scrollbar-color: var(--theme-control-border) var(--theme-surface); }
+:root .business-note { border-color: var(--theme-line); }
+:root .status-dot { background: var(--theme-subtle); }
+:root .status-dot.running { background: var(--theme-warm); box-shadow: 0 0 0 3px var(--theme-surface-hover); }
+:root .status-dot.finished { background: var(--theme-accent); }
+:root .text-button { color: var(--theme-muted); }
+:root .text-button:hover { color: var(--theme-accent); }
+
+/* The lab stage is UI rather than a fixed art scene. Card borders and the
+   ground shadow stay visible without changing the renderer's pose or opacity. */
+:root .stage { background-color: var(--theme-stage); background-image: radial-gradient(var(--theme-stage-grid) .8px, transparent .8px); }
+:root .stage-caption,
+:root .stage-footer,
+:root .anchor-label,
+:root .anchor-label > span:last-child { color: var(--theme-muted); }
+:root .route-guide { color: var(--theme-stage-guide); }
+:root .motion-card { background: var(--theme-card); color: var(--theme-text); border-color: var(--theme-card-border); box-shadow: var(--theme-card-shadow); }
+:root .card-mark { background: var(--theme-accent); color: var(--theme-on-accent); }
+:root .card-bottom b { color: var(--theme-muted); }
+:root .card-bottom i,
+:root .anchor-dot { background: var(--theme-accent); }
+:root .anchor-dot.orange { background: var(--theme-warm); }
+:root .destination-pad { background: var(--theme-target); color: var(--theme-muted); border-color: var(--theme-control-border); }
+:root .target-cross,
+:root .destination-pad small { color: var(--theme-muted); }
+:root .motion-visual.return-card { background: var(--theme-return-card); border-color: var(--theme-return-border); }
+:root .return-card .card-mark { background: var(--theme-return-mark); color: var(--theme-surface); }
+:root .return-card .card-spark { color: var(--theme-accent); }
+:root [data-tflip-shadow],
+:root [data-tflip-shadow] { background-color: var(--theme-motion-shadow) !important; }
+
+/* Settings, including expanded advanced fields and validation feedback. */
+:root .settings-heading .eyebrow,
+:root legend span:not(.i18n-text),
+:root .range-field output small,
+:root .range-caption,
+:root .field-grid > label,
+:root .block-label,
+:root .speed-shortcuts > span,
+:root .advanced summary small,
+:root .advanced summary i,
+:root .field-help,
+:root .phase-fields label,
+:root .settings-bottom { color: var(--theme-muted); }
+:root .preset-grid button { background: var(--theme-surface-alt); color: var(--theme-text); border-color: var(--theme-control-border); }
+:root .preset-grid button > span,
+:root .preset-grid button > small { color: var(--theme-muted); }
+:root .preset-grid button:hover { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
+:root .preset-grid button.selected { background: var(--theme-surface-selected); border-color: var(--theme-accent); box-shadow: inset 0 0 0 1px var(--theme-accent); }
+:root .preset-grid button.selected > span { color: var(--theme-accent); }
+:root .field-grid input,
+:root .field-grid select,
+:root .block-label select,
+:root .phase-fields input,
+:root textarea,
+:root .roadster-settings select {
+  background: var(--theme-surface);
+  border-color: var(--theme-control-border);
+  color: var(--theme-text);
+}
+:root input::placeholder,
+:root textarea::placeholder { color: var(--theme-subtle); opacity: 1; }
+:root .speed-shortcuts button { color: var(--theme-muted); border-color: var(--theme-control-border); }
+:root .speed-shortcuts button:hover { background: var(--theme-surface-hover); color: var(--theme-text); }
+:root .speed-shortcuts button.selected { color: var(--theme-accent); background: var(--theme-surface-selected); border-color: var(--theme-accent); }
+:root input[type="range"] { background: var(--theme-control-border); accent-color: var(--theme-accent); }
+:root input[type="range"]::-webkit-slider-thumb { background: var(--theme-accent); border-color: var(--theme-surface); box-shadow: 0 0 0 1px var(--theme-accent); }
+:root input[type="range"]::-moz-range-thumb { background: var(--theme-accent); border-color: var(--theme-surface); box-shadow: 0 0 0 1px var(--theme-accent); }
+:root .roadster-jet input,
+:root .ramp-feature .roadster-jet input,
+:root .ramp-feature .roadster-timeline input { accent-color: var(--theme-accent); }
+:root .toggle i { background: var(--theme-control-border); }
+:root .toggle i::after { background: var(--theme-surface); }
+:root .toggle input:checked ~ i { background: var(--theme-accent); }
+:root .advanced,
+:root .settings-bottom { border-color: var(--theme-line); }
+:root .settings-bottom .small-dot { background: var(--theme-subtle); }
+:root .error-message { background: var(--theme-warning-bg); color: var(--theme-warning-text); border-color: var(--theme-warning-border); }
+
+/* Code is readable in the page's selected scheme, including its copy control. */
+:root .code-panel { background: var(--theme-code); border-color: var(--theme-line); }
+:root .code-topbar,
+:root .code-footnote { color: var(--theme-muted); border-color: var(--theme-line); }
+:root .code-topbar i { background: var(--theme-accent); }
+:root .code-topbar button { color: var(--theme-accent); }
+:root .code-topbar button:hover { color: var(--theme-warm); }
+:root .code-panel pre { color: var(--theme-code-text); scrollbar-color: var(--theme-control-border) var(--theme-code); }
+
+/* Each scene keeps its own artwork. Only the surrounding card UI is themed. */
+:root .demo-card { background: var(--theme-surface); color: var(--theme-text); border-color: var(--theme-line); }
+:root .demo-card:hover { border-color: var(--theme-control-border); }
+:root .demo-card-orbit { --theme-demo-ink: var(--theme-demo-orbit); }
+:root .demo-card-portal { --theme-demo-ink: var(--theme-demo-portal); }
+:root .demo-card-vinyl { --theme-demo-ink: var(--theme-demo-vinyl); }
+:root .demo-card-candy { --theme-demo-ink: var(--theme-demo-candy); }
+:root .demo-card-arcade { --theme-demo-ink: var(--theme-demo-arcade); }
+:root .demo-card-paper { --theme-demo-ink: var(--theme-demo-paper); }
+/* These two dark stages previously inherited the card's light foreground. */
+:root .demo-card-orbit .demo-stage,
+:root .demo-card-portal .demo-stage { color: #f3f0e9; }
+:root .demo-info h3 { color: var(--theme-text); }
+:root .demo-eyebrow { color: var(--theme-demo-ink); }
+:root .demo-description,
+:root .demo-effect-toggle,
+:root .demo-status { color: var(--theme-muted); }
+:root .demo-tags span { color: var(--theme-muted); border-color: var(--theme-line); }
+:root .demo-card[data-playing="true"] .demo-status { color: var(--theme-demo-ink); }
+:root .demo-play { background: var(--theme-accent); color: var(--theme-on-accent); }
+:root .demo-play:hover { background: var(--theme-accent-hover); }
+:root .demo-effect-toggle input { accent-color: var(--theme-accent); }
+
+/* Persistent language/theme controls. preferences.css owns their geometry. */
+:root .language-picker,
+:root .appearance-controls {
+  color: var(--theme-text);
+  background: var(--theme-surface);
+  border-color: var(--theme-control-border);
+  box-shadow: var(--theme-floating-shadow);
+}
+:root .appearance-controls label { color: var(--theme-muted); }
+:root .language-picker select,
+:root .theme-picker select,
+:root .appearance-controls select { background: var(--theme-surface-alt); color: var(--theme-text); border-color: var(--theme-control-border); }
+:root .appearance-controls select:hover { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
+
+/* Preserve pointer/keyboard affordances without fading disabled labels away.
+   No color transitions: the entire scheme changes in the same paint. */
+:root .launch-button { transition: none; }
+:root .demo-card,
+:root .demo-play { transition-property: transform; }
+:root :is(button, a, input, select, textarea, summary):focus-visible {
+  outline-color: var(--theme-accent);
+}
+:root .demo-play:focus-visible,
+:root .demo-effect-toggle input:focus-visible,
+:root .toggle input:focus-visible ~ i { outline-color: var(--theme-accent); }
+:root :is(.roadster-toolbar button, .launch-button, .icon-button, .demo-play, .preset-grid button, .speed-shortcuts button):disabled {
+  opacity: 1;
+  background: var(--theme-disabled-bg);
+  color: var(--theme-disabled-text);
+  border-color: var(--theme-control-border);
+  box-shadow: none;
+}
+:root :is(input, select, textarea):disabled { color: var(--theme-disabled-text); cursor: default; }
+/* The retired illustrated hero can still be embedded without inheriting a
+   dark foreground from the page token. Its artwork remains unchanged. */
+:root .intro { color: #f4f2ed; }
+:root .intro .hero-bottom,
+:root .intro .hero-coordinate { color: #aaa6ba; }

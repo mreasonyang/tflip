@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tflip · Portable examples</title>
+<link rel="stylesheet" href="./gallery/style.css"><link rel="stylesheet" href="./featured/style.css">
+<style>
+body{margin:0;padding:24px;background:#f4f2ed;color:#191a22;font:16px system-ui}main{max-width:960px;margin:auto}h1{font-size:28px}label,button,select{font:inherit}button,select{padding:10px;border:1px solid #83828b;border-radius:6px;background:white;color:#191a22}nav{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}#example{min-height:300px}#example>div[data-lab-wrapper]{display:grid;place-items:center;width:180px;height:110px;margin:130px auto 50px;background:#dbd4ff;border:1px solid #7063a0;border-radius:16px}#status{min-height:1.5em}input[type=range]{width:180px}a{color:#423c9b}
+</style>
+<main><h1>Tflip · Portable examples</h1><p>These modules mount into your container. Keep the examples/ and runtime/ folders together.</p>
+<label>Demo <select id="demo"><option value="lab">SDK · In-place roll</option><option value="orbit">Orbit</option><option value="portal">Portal</option><option value="vinyl">Vinyl</option><option value="candy">Candy</option><option value="arcade">Arcade</option><option value="paper">Paper</option><option value="stunt">Two-shot edit · Canvas</option></select></label>
+<nav><button id="play">Play</button><button id="pause">Pause</button><button id="resume">Resume</button><button id="cancel">Cancel</button><label>Seek <input id="seek" type="range" min="0" max="1" step="0.01" value="0"></label></nav>
+<div id="example"></div><p id="status" role="status">Ready</p><p>Finishing a visual does not indicate business-task success.</p></main>
+<script type="module" src="./index.js"></script></html>

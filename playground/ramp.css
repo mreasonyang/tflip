@@ -1,0 +1,18 @@
+.ramp-feature{margin-top:30px;border-color:#34313c;background:#0d0f17}
+.ramp-heading{padding:27px 35px 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:25px;background:linear-gradient(115deg,#26232e,#10131b)}
+.ramp-heading h2{font-size:clamp(28px,4.2vw,56px);line-height:1.04;letter-spacing:-2.5px;font-weight:800;margin:16px 0 12px;color:#f4eeec}
+.ramp-heading h2 em{font-style:normal;color:#ffbba2}
+.ramp-heading .roadster-kicker span{background:#ffbba2;color:#35231f}
+.ramp-heading .roadster-hero-play{background:#ffe4d8;border-color:#b58b7f}
+.ramp-stage{height:500px;background:#090d14}
+.ramp-stage .roadster-scene-label{color:#afa2ab}
+.ramp-stage .roadster-scene-label strong{color:#e3c5ba}
+.ramp-legend{position:absolute;left:25px;right:25px;bottom:18px;display:flex;gap:18px;justify-content:space-between;align-items:flex-end;pointer-events:none;font:8px/1.8 var(--mono);letter-spacing:1px;color:#b4a2a2}
+.ramp-legend strong{color:#ead5cf;font-weight:400}.ramp-legend span:last-child{text-align:right}
+.ramp-feature .roadster-controls{background:#171923;border-color:#34313f}
+.ramp-feature .roadster-play{background:#ffdfd2;border-color:#ffdfd2}
+.ramp-feature .roadster-timeline input,.ramp-feature .roadster-jet input{accent-color:#ffc1a8}
+.ramp-feature .roadster-caption{background:#10131b}
+@media(min-width:1440px){.ramp-stage{height:540px}}
+@media(max-width:850px){.ramp-heading{padding:25px}.ramp-heading h2{letter-spacing:-1.7px}.ramp-stage{height:435px}}
+@media(max-width:650px){.ramp-feature{margin-top:24px}.ramp-heading{padding:24px 20px 18px;display:block}.ramp-heading h2{font-size:clamp(28px,8.2vw,41px);letter-spacing:-1.5px;margin-top:16px}.ramp-stage{height:360px}.ramp-legend{left:15px;right:15px;bottom:14px;font-size:6px;letter-spacing:.5px;gap:10px}.ramp-legend span:last-child{max-width:110px}}

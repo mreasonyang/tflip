@@ -1,0 +1,18 @@
+.stunt-heading h1{font-size:clamp(32px,4.8vw,66px);font-style:normal;letter-spacing:-2.8px;line-height:1.07}
+.stunt-heading h1 em{display:block;font-style:normal;margin-top:6px}
+.stunt-heading .roadster-subtitle{max-width:580px}
+.stunt-stage{height:520px}
+.stunt-legend{position:absolute;left:25px;right:25px;bottom:18px;display:flex;gap:18px;justify-content:space-between;align-items:flex-end;pointer-events:none;font:8px/1.8 var(--mono);letter-spacing:1px;color:#a8afc5}
+.stunt-legend strong{color:#d9dded;font-weight:400}.stunt-legend span:last-child{text-align:right}
+.stunt-feature .roadster-status-row #stuntStatus{color:var(--theme-text,#cbd7e8)}
+.stunt-feature .roadster-caption strong{max-width:34%}
+@media(min-width:1440px){.stunt-stage{height:570px}}
+@media(max-width:850px){.stunt-heading h1{letter-spacing:-1.8px}.stunt-stage{height:445px}}
+@media(max-width:650px){.stunt-heading h1{font-size:clamp(32px,8vw,44px);letter-spacing:-1.5px}.stunt-stage{height:360px}.stunt-legend{left:15px;right:15px;bottom:14px;font-size:6px;letter-spacing:.3px;gap:10px}.stunt-legend span:last-child{max-width:105px}.stunt-feature .roadster-caption strong{max-width:none}.stunt-heading .roadster-source{column-gap:14px}.stunt-heading .roadster-source>a{font-size:9px}}
+
+.stunt-seek-track{position:relative;display:flex;flex:1;min-width:0;align-items:center}
+.stunt-cut-marker{position:absolute;left:var(--stunt-cut-progress,57.971%);bottom:-6px;height:5px;border-left:1px solid var(--theme-muted,#a8afc5);pointer-events:none}
+.stunt-shot-guide{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;font:8px/1.6 var(--mono);color:var(--theme-muted,#a8afc5)}
+.stunt-cut-label{color:var(--theme-accent,#b8aafa);white-space:nowrap}
+.stunt-shot-guide>span:last-child{text-align:right}
+@media(max-width:650px){.stunt-shot-guide{font-size:7px;gap:8px;align-items:flex-start}.stunt-cut-label{font-size:6px}.stunt-feature .roadster-scene-label{gap:10px}.stunt-feature .roadster-scene-label>strong{flex-shrink:0}.stunt-feature .roadster-scene-label>span{max-width:65%;line-height:1.6}}
