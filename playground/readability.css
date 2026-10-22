@@ -1,0 +1,173 @@
+/* Shared reading scale, loaded after component and breakpoint styles. */
+:root { --text-body: 16px; --text-ui: 14px; --text-meta: 12px; }
+body { font-size: var(--text-body); line-height: 1.6; padding-bottom: 128px; }
+
+.site-header nav { font-size: var(--text-ui); gap: 24px; }
+.site-header nav > a { min-height: 44px; display: inline-flex; align-items: center; }
+.github-link { display: inline-flex; align-items: center; gap: 9px; font-weight: 650; }
+.github-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.github-link:hover { color: var(--theme-accent); }
+.github-callout { margin-top: 26px; }
+.github-source { min-height: 44px; padding: 10px 15px; border: 1px solid var(--theme-control-border); border-radius: 8px; background: var(--theme-surface); font-size: var(--text-ui); }
+.github-source:hover { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
+.github-callout p { margin-top: 9px; color: var(--theme-muted); font-size: var(--text-ui); line-height: 1.7; }
+
+.version-tag, .eyebrow, .section-heading .eyebrow, .settings-heading .eyebrow,
+.integration-copy .eyebrow, .agent-handoff .eyebrow,
+.roadster-kicker, .roadster-kicker > span,
+.demo-eyebrow, .demo-tags span, .demo-number,
+.live-badge, .stage-caption, .stage-coordinate,
+.anchor-label, .anchor-label > span:last-child, .stage-footer, .dimension-note,
+.card-type, .card-bottom, .card-bottom b, .destination-pad small,
+.segmented button > span:not(.i18n-text),
+.panel-title h2 > span:not(.i18n-text), legend > span:not(.i18n-text),
+.preset-grid button > small, .range-field output small,
+.range-caption, .speed-shortcuts > span, .advanced summary small,
+.settings-bottom, .integration-tags span, .code-topbar, .code-footnote,
+.code-footnote > span:last-child, .agent-kind, .agent-meta, .agent-access,
+.site-footer, .site-footer > span:last-child { font-size: var(--text-meta); line-height: 1.6; }
+
+.section-heading > p, .roadster-subtitle, .demo-description,
+.integration-copy > p:not(.eyebrow), .agent-handoff-heading p:last-child {
+  font-size: var(--text-body); line-height: 1.8;
+}
+.demo-effect-toggle, .demo-status, .demo-play,
+.roadster-source, .roadster-source a, .roadster-hero-play,
+.roadster-toolbar button, .roadster-settings label, .roadster-settings select,
+.roadster-timeline, .roadster-timeline > label, .roadster-status-row, .roadster-caption,
+.roadster-scene-label, .stunt-legend, .stunt-shot-guide, .stunt-cut-label,
+.segmented button, .launch-button, .sequence-button,
+.timeline, .timeline label, .timeline output, .timeline > span,
+.playback-summary, .playback-summary > span:last-child,
+.panel-title h2, .text-button, .label-action .text-button,
+.event-log, .event-log time, .event-log .event-name, .event-log .empty-log,
+.business-note, legend, .preset-grid button > b,
+.range-field > label, .speed-field > label, .range-field output, .speed-field output,
+.field-grid > label, .block-label, .field-grid input, .field-grid select, .block-label select,
+.speed-shortcuts button, .toggle, .advanced summary, .label-action,
+.field-help, .phase-fields label, .phase-fields input, .error-message,
+.code-topbar button, .agent-fields label, .agent-fields select, .agent-help,
+.agent-actions button, .agent-retry, .agent-links a, .agent-status,
+.agent-preview, .agent-scene-link { font-size: var(--text-ui); line-height: 1.65; }
+
+.demo-play, .launch-button, .icon-button, .roadster-toolbar button,
+.roadster-settings select, .agent-fields select, .agent-actions button,
+.agent-links a, .agent-retry, .field-grid input, .field-grid select,
+.block-label select, .speed-shortcuts button, .text-button,
+.code-topbar button, .sequence-button, .agent-scene-link, .footer-links a { min-height: 44px; }
+.icon-button { min-width: 40px; }
+.demo-effect-toggle, .toggle { min-height: 36px; }
+.demo-effect-toggle input, .roadster-jet input { width: 18px; height: 18px; }
+.demo-status { flex: 1; width: auto; min-width: 110px; }
+.demo-coordinate { font-size: var(--text-meta); line-height: 1.6; letter-spacing: .3px; opacity: 1; max-width: calc(100% - 44px); }
+.demo-number { opacity: 1; }
+.demo-score small { font-size: var(--text-meta); }
+.demo-info { padding: 26px; }
+.demo-description { min-height: 3.6em; }
+.demo-options { margin: 18px 0; }
+.demo-tags { gap: 8px; }
+.demo-tags span { padding: 5px 8px; }
+.demo-stage-word { line-height: 1.05; }
+.roadster-source { max-width: 270px; }
+.roadster-scene-label, .stunt-legend, .stunt-shot-guide { letter-spacing: 0; }
+.roadster-status-row, .roadster-caption { gap: 20px; }
+.roadster-status-row { flex-wrap: wrap; }
+.stunt-shot-guide { flex-wrap: wrap; row-gap: 5px; }
+.stunt-legend > span:first-child { max-width: 70%; }
+.stunt-legend > span:last-child { flex-shrink: 0; }
+.roadster-heading { gap: 24px; }
+.section-heading > p { max-width: 46%; }
+.event-log { height: 130px; }
+.event-log li { flex-wrap: wrap; }
+.event-log .event-name { width: auto; min-width: 72px; }
+.preset-grid button { padding: 12px 4px; }
+.speed-shortcuts { flex-wrap: wrap; }
+.phase-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.effect-toggles { flex-wrap: wrap; }
+.settings-bottom { align-items: baseline; }
+.code-panel pre, .agent-preview textarea, .details-body textarea { font-size: var(--text-ui); line-height: 1.8; }
+.code-panel pre { max-height: 380px; }
+.card-title, .destination-pad { font-size: var(--text-ui); line-height: 1.4; }
+.card-top, .card-bottom { letter-spacing: 0; }
+.card-type { letter-spacing: 0; }
+.motion-card { padding: 12px; }
+.card-spark { font-size: 18px; }
+.stage-footer { flex-wrap: wrap; bottom: 12px; gap: 4px; }
+.stage-footer > span:first-child { max-width: 100%; }
+.stage.in-place .origin-group { bottom: 90px; }
+.site-footer { align-items: center; }
+.footer-links { align-items: center; }
+.footer-links a { display: inline-flex; align-items: center; }
+.appearance-controls { width: 330px; }
+.appearance-controls label { font-size: var(--text-meta); }
+.appearance-controls select { font-size: var(--text-ui); min-height: 40px; }
+
+@media (max-width: 1100px) {
+  .laboratory { grid-template-columns: minmax(0, 1fr) 320px; }
+  .integration { gap: 30px; }
+}
+@media (max-width: 950px) {
+  .laboratory { grid-template-columns: minmax(0, 1fr); }
+  .experiment-column { border-right: 0; border-bottom: 1px solid var(--theme-line); }
+  .settings-panel { padding: 26px; }
+  .roadster-heading { flex-wrap: wrap; }
+  .roadster-heading > div:first-child { flex: 1 1 360px; }
+  .roadster-source { max-width: none; flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; text-align: left; }
+  .roadster-hero-play { margin: 0; }
+  .roadster-source a { display: inline-flex; align-items: center; margin: 0; min-height: 44px; }
+  .roadster-settings { flex-wrap: wrap; margin-left: 0; }
+}
+@media (max-width: 650px) {
+  .site-header { height: auto; min-height: 82px; gap: 12px; padding: 14px 0; flex-wrap: wrap; }
+  .site-header nav { gap: 12px; }
+  .site-header .nav-cta { padding: 0; }
+  .nav-github .github-icon { width: 18px; height: 18px; }
+  .nav-github { gap: 6px; }
+  .wordmark { flex-shrink: 0; }
+  .section-heading > p { max-width: none; }
+  .roadster-hero-play { display: inline-flex; margin: 0; min-height: 44px; }
+  .roadster-source { gap: 10px 16px; }
+  .stunt-heading .roadster-source > a, .roadster-source > .agent-scene-link { font-size: var(--text-ui); }
+  .roadster-source > .i18n-text { flex-basis: 100%; }
+  .roadster-scene-label { flex-wrap: wrap; row-gap: 4px; }
+  .stunt-feature .roadster-scene-label > span { max-width: 100%; text-align: left; }
+  .roadster-timeline { flex-wrap: wrap; }
+  .roadster-timeline > label { flex-basis: 100%; }
+  .roadster-settings { gap: 10px; }
+  .roadster-settings label { flex-wrap: wrap; }
+  .stunt-legend { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .stunt-legend > span:first-child, .stunt-legend > span:last-child { max-width: 100%; text-align: left; }
+  .stunt-legend > span:last-child { display: none; }
+  .stunt-shot-guide > span:last-child { text-align: left; }
+  .demo-info { padding: 22px; }
+  .demo-description { min-height: 0; }
+  .demo-status { min-width: 90px; }
+  .demo-actions { align-items: flex-start; }
+  .demo-coordinate { bottom: 14px; }
+  .demo-card-paper .demo-coordinate { max-width: 230px; }
+  .stage { height: 440px; }
+  .origin-group { bottom: 80px; }
+  .destination-group { bottom: 240px; }
+  .live-badge { display: none; }
+  .timeline { flex-wrap: wrap; }
+  .timeline > span { margin-left: auto; }
+  .sequence-button { margin-left: 0; }
+  .preset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agent-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agent-handoff-heading { display: block; }
+  .agent-kind { display: inline-block; margin-top: 12px; }
+  .integration { padding-top: 40px; }
+  .site-footer { align-items: flex-start; gap: 10px; }
+  .appearance-controls { width: 300px; }
+}
+@media (max-width: 450px) {
+  .site-header nav > a:first-child { display: none; }
+}
+@media (max-width: 380px) {
+  .site-header nav > a:first-child { display: none; }
+  .demo-actions { flex-direction: column; }
+  .demo-status { justify-content: flex-start; text-align: left; }
+  .segmented { flex-wrap: wrap; }
+  .transport-main { gap: 12px; }
+  .phase-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -1,7 +1,7 @@
 // Local bilingual resources. Selected editorial copy reviewed with agy; see docs/AGY_COPY_REVIEW_RESULT.md.
 export default {
   "zh": {
-    "ui.stunt.title": "Tflip <em>飞跃边界。</em>",
+    "ui.stunt.title": "Tflip <em>飞跃边界</em>",
     "ui.stunt.featured": "置顶演示",
     "ui.stunt.kicker": "双镜头 / 动态研究",
     "ui.stunt.subtitle": "先看 U 型跑道翻滚，再切到飞越车阵。两个镜头，完整呈现。",
@@ -202,10 +202,12 @@ export default {
     "ui.theme.dark": "深色",
     "ui.theme.a11y": "选择页面主题",
     "ui.preferences.a11y": "页面显示偏好",
+    "ui.github.source": "在 GitHub 查看源码",
+    "ui.github.description": "MIT 开源 · 阅读文档、查看更新或反馈问题",
     "ui.footer.feedback": "反馈"
   },
   "en": {
-    "ui.stunt.title": "Tflip <em>Beyond the ramp.</em>",
+    "ui.stunt.title": "Tflip <em>Beyond the ramp</em>",
     "ui.stunt.featured": "FEATURED DEMO",
     "ui.stunt.kicker": "TWO SHOTS / MOTION STUDY",
     "ui.stunt.subtitle": "A full U-ramp roll, then a cut to the car jump. Two shots, each played in full.",
@@ -406,6 +408,8 @@ export default {
     "ui.theme.dark": "Dark",
     "ui.theme.a11y": "Choose page theme",
     "ui.preferences.a11y": "Display preferences",
+    "ui.github.source": "View source on GitHub",
+    "ui.github.description": "MIT licensed · Docs, releases, and issue tracking",
     "ui.footer.feedback": "Feedback"
   }
 };
