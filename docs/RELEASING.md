@@ -12,6 +12,10 @@
 
 `npm pack` 直接作用于开发仓库不是受支持的消费者交付方式；统一使用 `npm run pack:local`。发布目录由干净 staging 生成；不要向其中混入源码、参考视频、秘密、运行日志或历史下载。
 
+静态输出会根据全部输入文件和生成器源码计算 `assetRevision`，并为 HTML 入口、嵌套 ESM、CSS 及 JSON 的本地资源引用统一添加 `?v=`。源码及规范 SDK/示例/Skill 下载的 URL、归档字节不因此改变。manifest 分别记录输入哈希与最终输出哈希；资源变化后重新生成整份站点，避免只上传部分文件。
+
+输出中的 `_headers` 使用单条全路径规则设置 `Cache-Control: no-cache, max-age=0, must-revalidate`，避免多个规则合并出冲突值。Cloudflare 将它作为部署配置解析，不公开为资源；HTTP 读回应跳过 manifest 中 `served: false` 的条目，其余文件继续按哈希核验。规则行为见 [Cloudflare Pages Headers](https://developers.cloudflare.com/pages/configuration/headers/)。发布时核对根路径、JS 和 catalog 的响应头，以及入口与嵌套资源中的 `v` 是否等于本次 `assetRevision`。
+
 ## 发布检查
 
 - GitHub Actions 必须通过；它在声明的开发 Node 版本上跑单元/类型检查，并分别跑 Brave、WebKit，再生成候选包。

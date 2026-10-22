@@ -43,6 +43,50 @@ test('a clean staged release removes retired assets and precisely manifests ever
   for (const asset of manifest.assets) assert.equal(hash(await readFile(join(root, 'tailnet-preview', asset.path))), asset.sha256);
 });
 
+test('one revision covers HTML, nested modules, CSS and JSON without changing canonical downloads', async t => {
+  const root = await fixture(t);
+  const sources = {
+    'playground/index.html': '<link rel="stylesheet" href="./style.css"><script type="module" src="./app.js"></script><a href="../agent/catalog.json">Catalog</a>',
+    'playground/app.js': "import './nested.js'; export { value } from '../dist/core.js'; const later = () => import('./nested.js'); fetch(new URL('../agent/catalog.json', import.meta.url)); fetch('settings.json');",
+    'playground/nested.js': "import { value } from '../dist/core.js'; export { value };",
+    'playground/style.css': '@import "./extra.css"; @import url("./extra.css?theme=dark#theme");',
+    'playground/extra.css': 'body { color: black; }',
+    'playground/settings.json': '{"module":"./nested.js","theme":"./extra.css"}',
+    'dist/core.js': 'export const value = 1;',
+    'agent/examples/index.html': '<link rel="stylesheet" href="./style.css"><script type="module" src="./entry.js"></script>',
+    'agent/examples/entry.js': "import '../runtime/index.js';",
+    'agent/examples/style.css': 'body { color: black; }',
+    'agent/runtime/index.js': "export { value } from '../../dist/core.js';",
+  };
+  for (const [path, bytes] of Object.entries(sources)) {
+    await mkdir(join(root, path, '..'), { recursive: true });
+    await writeFile(join(root, path), bytes);
+  }
+  const first = await syncStaticOutput(root);
+  assert.match(first.assetRevision, /^[a-f0-9]{20}$/);
+  const read = path => readFile(join(root, 'tailnet-preview', path), 'utf8');
+  const version = `v=${first.assetRevision}`;
+  for (const path of ['index.html', 'playground/index.html', 'playground/app.js', 'playground/nested.js', 'playground/style.css', 'playground/settings.json', 'agent/examples/index.html', 'agent/examples/entry.js', 'agent/runtime/index.js']) {
+    assert.ok((await read(path)).includes(version), `${path} has versioned dependencies`);
+  }
+  assert.ok((await read('playground/app.js')).includes(`settings.json?${version}`));
+  assert.ok((await read('playground/style.css')).includes(`extra.css?theme=dark&${version}#theme`));
+  const catalog = JSON.parse(await read('agent/catalog.json'));
+  assert.equal(catalog.package.url, './downloads/tflip-motion-1.2.3.tgz');
+  assert.equal(await read('agent/downloads/tflip-motion-1.2.3.tgz'), 'fixture SDK bytes');
+  assert.equal(await read('_headers'), '/*\n  Cache-Control: no-cache, max-age=0, must-revalidate\n');
+  const manifest = JSON.parse(await readFile(join(root, 'test-results/tailnet-preview-manifest.json'), 'utf8'));
+  assert.equal(manifest.assets.find(asset => asset.path === '_headers').served, false);
+  assert.equal(manifest.assetRevision, first.assetRevision);
+  for (const [path, bytes] of Object.entries(sources)) assert.equal(await readFile(join(root, path), 'utf8'), bytes, 'Source is never rewritten');
+  assert.equal((await syncStaticOutput(root)).assetRevision, first.assetRevision, 'Identical inputs produce a stable revision');
+  await writeFile(join(root, 'playground/extra.css'), 'body { color: blue; }');
+  const changed = await syncStaticOutput(root);
+  assert.notEqual(changed.assetRevision, first.assetRevision, 'A nested resource change updates the whole graph revision');
+  assert.ok((await read('index.html')).includes(`v=${changed.assetRevision}`));
+  assert.ok((await read('agent/runtime/index.js')).includes(`v=${changed.assetRevision}`));
+});
+
 test('untracked output files prevent replacement and are preserved', async t => {
   const root = await fixture(t);
   await syncStaticOutput(root);

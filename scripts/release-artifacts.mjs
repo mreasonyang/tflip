@@ -3,10 +3,77 @@ import { createHash } from 'node:crypto';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
+import ts from 'typescript';
 import { createRootEntry } from './site-entry.mjs';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const generator = 'tflip-static-release-v1';
+// One rule avoids Cloudflare joining conflicting Cache-Control values when
+// several patterns match. Version queries bypass fresh legacy browser entries.
+const cacheHeaders = '/*\n  Cache-Control: no-cache, max-age=0, must-revalidate\n';
+
+function versionResourceURL(value, owner, files, revision, allowBare = false) {
+  if (typeof value !== 'string' || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(value)) return value;
+  if (!allowBare && !/^\.{1,2}\//.test(value)) return value;
+  const match = /^([^?#]+)(?:\?([^#]*))?(#.*)?$/.exec(value);
+  if (!match || !/\.(?:m?js|css|json)$/i.test(match[1])) return value;
+  const pathname = decodeURIComponent(match[1]);
+  const target = pathname.startsWith('/') ? posix.normalize(pathname.slice(1)) : posix.normalize(posix.join(posix.dirname(owner), pathname));
+  validateAssetPath(target);
+  if (!files.has(target)) throw new Error(`Missing static dependency: ${owner} → ${value}`);
+  const query = new URLSearchParams(match[2] ?? '');
+  query.set('v', revision);
+  return `${match[1]}?${query}${match[3] ?? ''}`;
+}
+
+function versionJavaScript(source, owner, files, revision) {
+  const syntax = ts.createSourceFile(owner, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
+  const changes = [];
+  function visit(node) {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+      const parent = node.parent;
+      const call = ts.isCallExpression(parent) && parent.arguments[0] === node;
+      const fetchArgument = call && (ts.isIdentifier(parent.expression) && parent.expression.text === 'fetch' || ts.isPropertyAccessExpression(parent.expression) && parent.expression.name.text === 'fetch');
+      const urlArgument = ts.isNewExpression(parent) && ts.isIdentifier(parent.expression) && parent.expression.text === 'URL' && parent.arguments?.[0] === node;
+      const value = versionResourceURL(node.text, owner, files, revision, fetchArgument || urlArgument);
+      if (value !== node.text) changes.push({ start: node.getStart(syntax), end: node.end, value: JSON.stringify(value) });
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(syntax);
+  for (const change of changes.sort((a, b) => b.start - a.start)) source = source.slice(0, change.start) + change.value + source.slice(change.end);
+  return source;
+}
+
+function versionCSS(source, owner, files, revision) {
+  const url = value => versionResourceURL(value, owner, files, revision, true);
+  return source
+    .replace(/\burl\(\s*(?:(['"])(.*?)\1|([^'"\s][^)]*?))\s*\)/gi, (match, quote, quoted, bare) => {
+      const value = (quoted ?? bare).trim();
+      const changed = url(value);
+      return changed === value ? match : `url(${JSON.stringify(changed)})`;
+    })
+    .replace(/(@import\s+)(['"])([^'"]+)\2/gi, (match, prefix, quote, value) => `${prefix}${quote}${url(value)}${quote}`);
+}
+
+function versionStaticFile(bytes, owner, files, revision) {
+  let source = bytes.toString('utf8');
+  if (/\.m?js$/.test(owner)) source = versionJavaScript(source, owner, files, revision);
+  else if (/\.css$/.test(owner)) source = versionCSS(source, owner, files, revision);
+  else if (/\.html$/.test(owner)) {
+    source = source.replace(/\b(src|href)(\s*=\s*)(['"])(.*?)\3/gi, (match, attribute, assignment, quote, value) => {
+      const decoded = value.replaceAll('&amp;', '&');
+      const changed = versionResourceURL(decoded, owner, files, revision, true);
+      return changed === decoded ? match : `${attribute}${assignment}${quote}${changed.replaceAll('&', '&amp;')}${quote}`;
+    });
+    source = source.replace(/(<script\b[^>]*>)([\s\S]*?)(<\/script\s*>)/gi, (match, open, body, close) => `${open}${versionJavaScript(body, owner, files, revision)}${close}`);
+    source = source.replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style\s*>)/gi, (match, open, body, close) => `${open}${versionCSS(body, owner, files, revision)}${close}`);
+  } else if (/\.json$/.test(owner)) {
+    const walk = value => typeof value === 'string' ? versionResourceURL(value, owner, files, revision) : Array.isArray(value) ? value.map(walk) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key, item]) => [key, walk(item)])) : value;
+    source = JSON.stringify(walk(JSON.parse(source)), null, 2) + '\n';
+  } else return bytes;
+  return Buffer.from(source);
+}
 
 async function inspect(path, kind, optional = false) {
   let entry;
@@ -95,7 +162,7 @@ export async function syncStaticOutput(projectRoot) {
     }
   }
   for (const [directory, accept] of [
-    ['playground', /\.(html|js|css)$/],
+    ['playground', /\.(html|js|css|json)$/],
     ['dist', /\.js$/],
     ['agent', /\.(md|json|js|css|html|ts|tgz|zip)$/],
   ]) {
@@ -114,21 +181,25 @@ export async function syncStaticOutput(projectRoot) {
   let movedNext = false;
   let committed = false;
   try {
+    const inputs = new Map();
+    for (const path of paths.sort()) inputs.set(path, await readFile(join(root, path)));
+    inputs.set('index.html', Buffer.from(createRootEntry(inputs.get('playground/index.html').toString('utf8'))));
+    inputs.set('_headers', Buffer.from(cacheHeaders));
+    const sourceInputs = [...inputs].sort(([a], [b]) => a.localeCompare(b)).map(([path, bytes]) => ({ path, bytes: bytes.length, sha256: hash(bytes), ...(['index.html', '_headers'].includes(path) ? { generated: true } : {}) }));
+    const transformerSha256 = hash(await readFile(fileURLToPath(import.meta.url)));
+    const assetRevision = hash(JSON.stringify({ transformerSha256, sourceInputs })).slice(0, 20);
     const assets = [];
-    for (const path of paths.sort()) {
-      const bytes = await readFile(join(root, path));
+    for (const [path, input] of inputs) {
+      const bytes = versionStaticFile(input, path, inputs, assetRevision);
       await mkdir(dirname(join(stage, path)), { recursive: true });
       await writeFile(join(stage, path), bytes);
-      assets.push({ path, bytes: bytes.length, sha256: hash(bytes), localCopyVerified: true });
+      assets.push({ path, bytes: bytes.length, sha256: hash(bytes), localCopyVerified: true, sourceSha256: hash(input), transformed: !bytes.equals(input), ...(path === '_headers' ? { served: false, role: 'hosting-configuration' } : {}) });
     }
-    const entry = Buffer.from(createRootEntry(await readFile(join(root, 'playground/index.html'), 'utf8')));
-    await writeFile(join(stage, 'index.html'), entry);
-    assets.push({ path: 'index.html', bytes: entry.length, sha256: hash(entry), localCopyVerified: true });
     assets.sort((a, b) => a.path.localeCompare(b.path));
     await verifyOutput(stage, assets);
     const manifest = {
       generator, schemaVersion: 1, updatedAt: new Date().toISOString(), previewPath: './',
-      agentEntry: './agent/index.md', contentRevision: catalog.contentRevision,
+      agentEntry: './agent/index.md', contentRevision: catalog.contentRevision, assetRevision, transformerSha256, sourceInputs,
       scope: 'Complete static playground, reusable runtime, agent documentation, versioned downloads and HTTP 404 page. No host or network configuration.',
       assets, verification: { localCopiesMatch: true, exactFileSet: true, remoteUserDeviceVerified: false },
     };
@@ -142,7 +213,7 @@ export async function syncStaticOutput(projectRoot) {
     movedNext = true;
     await rename(nextManifest, manifestPath);
     committed = true;
-    return { directory: 'tailnet-preview', files: assets.length, contentRevision: catalog.contentRevision };
+    return { directory: 'tailnet-preview', files: assets.length, contentRevision: catalog.contentRevision, assetRevision };
   } catch (error) {
     if (!committed) {
       if (movedNext) await rename(output, stage);
@@ -202,7 +273,8 @@ with zipfile.ZipFile(target,'w',zipfile.ZIP_DEFLATED,compresslevel=9) as archive
     }
     const manifest = {
       schemaVersion: 1, product: 'Tflip', package: pkg.name, version: pkg.version, license: pkg.license,
-      createdAt: new Date().toISOString(), source, contentRevision: catalog.contentRevision,
+      createdAt: new Date().toISOString(), source, contentRevision: catalog.contentRevision, assetRevision: staticManifest.assetRevision,
+      transformerSha256: staticManifest.transformerSha256, staticSourceInputs: staticManifest.sourceInputs,
       releaseReady: !source.dirty,
       evidenceBoundary: 'Local archives only. Dirty source is a candidate build; no hosting deployment or user-device acceptance is implied.',
       artifacts, staticAssets: staticManifest.assets,
