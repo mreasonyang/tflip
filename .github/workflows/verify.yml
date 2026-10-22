@@ -48,7 +48,12 @@ jobs:
           sudo apt-get install -y brave-browser
       - name: Install Playwright WebKit and system dependencies
         if: matrix.engine == 'webkit'
-        run: npx --no-install playwright install --with-deps webkit
+        timeout-minutes: 5
+        run: |
+          # The runner's Azure mirror can stall package downloads for 20+ minutes.
+          # Keep Ubuntu's package signatures and use its canonical archive.
+          sudo sed -i 's/azure\.archive\.ubuntu\.com/archive.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources
+          npx --no-install playwright install --with-deps webkit
       - run: npm run build:agent
       - run: npm run test:browser
       - uses: actions/upload-artifact@v5
