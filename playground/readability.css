@@ -11,6 +11,16 @@ body { font-size: var(--text-body); line-height: 1.6; padding-bottom: 128px; }
 .github-source { min-height: 44px; padding: 10px 15px; border: 1px solid var(--theme-control-border); border-radius: 8px; background: var(--theme-surface); font-size: var(--text-ui); }
 .github-source:hover { background: var(--theme-surface-hover); border-color: var(--theme-accent); }
 .github-callout p { margin-top: 9px; color: var(--theme-muted); font-size: var(--text-ui); line-height: 1.7; }
+.npm-install { margin-top: 24px; }
+.npm-install h3 { font-size: var(--text-ui); font-weight: 650; margin-bottom: 10px; }
+.npm-install-command { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 12px; border: 1px solid var(--theme-control-border); border-radius: 8px; background: var(--theme-surface); }
+.npm-install-command pre { flex: 1 1 25ch; min-width: 0; margin: 0; overflow-x: auto; font: 13px/1.8 var(--mono); }
+.npm-install-command button { min-height: 44px; color: var(--theme-accent); font-size: var(--text-ui); font-weight: 650; }
+.npm-install-note, .npm-copy-status { margin-top: 10px; color: var(--theme-muted); font-size: var(--text-ui); line-height: 1.7; }
+.npm-install-note code { font: 13px/1.7 var(--mono); overflow-wrap: anywhere; }
+.npm-package-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--theme-accent); font-size: var(--text-ui); }
+.npm-package-link:hover { text-decoration: underline; }
+.npm-copy-status:empty { display: none; }
 
 .version-tag, .eyebrow, .section-heading .eyebrow, .settings-heading .eyebrow,
 .integration-copy .eyebrow, .agent-handoff .eyebrow,

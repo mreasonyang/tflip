@@ -21,6 +21,7 @@ let currentKind = 'single';
 let disposed = false;
 let visibleError = null;
 let copyMessage = phrase('lab.copy.ready');
+let installCopyMessage = null;
 
 // Keep semantic messages, including nested parameters, so existing UI and log
 // entries can be translated without replaying any animation or event.
@@ -446,6 +447,21 @@ $('resetButton').addEventListener('click', () => {
   logEvent('reset', 'lab.log.reset');
 });
 $('clearLog').addEventListener('click', () => { $('eventLog').replaceChildren(); logEntries.length = 0; });
+$('copyInstallButton').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText($('npmInstallCommand').textContent.trim());
+    installCopyMessage = phrase('ui.install.copied');
+  } catch {
+    installCopyMessage = phrase('ui.install.denied');
+    $('npmInstallCommand').parentElement.focus();
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents($('npmInstallCommand'));
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }
+  $('installCopyStatus').textContent = renderPhrase(installCopyMessage);
+});
 $('copyButton').addEventListener('click', async () => {
   try {
     updateConfig();
@@ -475,6 +491,7 @@ function translateLab() {
   // ownership remain untouched, including a currently flying transfer card.
   document.querySelectorAll('[data-lab-visual]').forEach((card) => translateDOM(card));
   $('copyStatus').textContent = renderPhrase(copyMessage);
+  $('installCopyStatus').textContent = installCopyMessage ? renderPhrase(installCopyMessage) : '';
   updateConfig({ preserveError: true });
   renderError();
 }
