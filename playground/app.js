@@ -6,16 +6,13 @@ import { createCodeExample } from './code-example.js';
 
 const $ = (id) => document.getElementById(id);
 const phases = ['anticipation', 'launch', 'roll', 'descent', 'settle'];
-const knownReasons = new Set(['user', 'replaced', 'disposed', 'detached', 'layout', 'error', 'aborted', 'mode-change', 'reset', 'sequence-start']);
 const activeRuns = new Set();
 const knownRuns = new WeakSet();
 const runPhases = new WeakMap();
-const logEntries = [];
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 let mode = 'transfer';
 let preset = 'launch';
 let current = null;
-let runCount = 0;
 let copiedConfig = '';
 let currentKind = 'single';
 let disposed = false;
@@ -187,32 +184,6 @@ function motionOptions({ reverse = false, autoplay = true, forceTransfer = false
   };
 }
 
-function renderLogEntry(entry) {
-  entry.name.textContent = t(`lab.event.${entry.type}`);
-  entry.detail.textContent = renderPhrase(entry.message);
-}
-
-function logEvent(type, key, params = {}) {
-  const list = $('eventLog');
-  list.querySelector('.empty-log')?.remove();
-  const li = document.createElement('li');
-  const timestamp = document.createElement('time');
-  timestamp.dateTime = new Date().toISOString();
-  timestamp.textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
-  const name = document.createElement('span');
-  name.className = `event-name ${type}`;
-  const detail = document.createElement('span');
-  detail.className = 'event-description';
-  const entry = { type, message: phrase(key, params), name, detail };
-  renderLogEntry(entry);
-  li.append(timestamp, name, detail);
-  // Keep recent events visible without scrolling: a synthetic log scroll would
-  // otherwise trigger the package's intentional layout='cancel' policy.
-  list.prepend(li);
-  logEntries.unshift(entry);
-  while (list.children.length > 30) { list.lastElementChild.remove(); logEntries.pop(); }
-}
-
 function renderPlaybackText(controller) {
   const terminal = controller.status === 'finished' || controller.status === 'cancelled';
   const phase = runPhases.get(controller);
@@ -244,24 +215,14 @@ function attach(controller, kind = 'single') {
   current = controller;
   currentKind = kind;
   if (knownRuns.has(controller)) {
-    logEvent('ignore', 'lab.log.ignore');
     updatePlayback(controller);
     return controller;
   }
   knownRuns.add(controller);
   activeRuns.add(controller);
-  const run = phrase('lab.log.runName', {
-    number: String(++runCount).padStart(2, '0'),
-    kind: phrase(kind === 'sequence' ? 'lab.kind.sequence' : mode === 'in-place' ? 'lab.kind.inPlace' : 'lab.kind.transfer'),
-  });
   const unsubscribe = [];
   for (const type of ['start', 'land', 'finish', 'cancel']) {
     unsubscribe.push(controller.on(type, (event) => {
-      const reason = event.result?.reason;
-      logEvent(type, `lab.log.${type}`, {
-        run,
-        reason: knownReasons.has(reason) ? phrase(`lab.reason.${reason}`) : reason || phrase('lab.reason.cancelled'),
-      });
       updatePlayback(controller, event.pose?.phase);
       if (event.result?.error) showError(event.result.error);
     }));
@@ -391,8 +352,8 @@ for (const button of document.querySelectorAll('[data-speed]')) button.addEventL
 $('playButton').addEventListener('click', () => run());
 $('pauseButton').addEventListener('click', () => {
   if (!current) return;
-  if (current.status === 'paused') { current.resume(); logEvent('resume', 'lab.log.resume'); }
-  else { current.pause(); logEvent('pause', 'lab.log.pause'); }
+  if (current.status === 'paused') current.resume();
+  else current.pause();
   updatePlayback(current);
 });
 $('cancelButton').addEventListener('click', () => { current?.cancel(); if (current) updatePlayback(current); });
@@ -422,7 +383,6 @@ $('sequenceButton').addEventListener('click', () => {
     const second = motionOptions({ reverse: true, forceTransfer: true });
     cancelAll('sequence-start');
     attach(sequence([first, second]), 'sequence');
-    logEvent('sequence', 'lab.log.sequence');
   } catch (error) { showError(error); }
 });
 $('waypointButton').addEventListener('click', () => {
@@ -444,9 +404,7 @@ $('resetButton').addEventListener('click', () => {
   applyPreset('launch');
   resetTransport();
   clearError();
-  logEvent('reset', 'lab.log.reset');
 });
-$('clearLog').addEventListener('click', () => { $('eventLog').replaceChildren(); logEntries.length = 0; });
 $('copyInstallButton').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText($('npmInstallCommand').textContent.trim());
@@ -486,7 +444,6 @@ function translateLab() {
   if (current) renderPlaybackText(current);
   else renderIdleText();
   updatePreference();
-  logEntries.forEach(renderLogEntry);
   // Translate only leaf text in existing visuals. Their nodes, transforms, and
   // ownership remain untouched, including a currently flying transfer card.
   document.querySelectorAll('[data-lab-visual]').forEach((card) => translateDOM(card));

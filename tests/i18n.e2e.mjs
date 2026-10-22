@@ -220,7 +220,7 @@ test('whole-page language integration in Brave and WebKit', { timeout: 240000 },
         evidence[engine].layouts = screenshots; await save();
       });
 
-      await t.test('validation errors, previous event logs and denied clipboard feedback retranslate', async () => {
+      await t.test('validation and clipboard feedback retranslate without public diagnostic logs', async () => {
         const { context, page } = await session(['zh-CN']);
         try {
           const validation = [];
@@ -247,21 +247,14 @@ test('whole-page language integration in Brave and WebKit', { timeout: 240000 },
           await click(page, '#playButton');
           await page.waitForFunction(() => Number(document.querySelector('#progress').value) > 10);
           await click(page, '#pauseButton'); await click(page, '#cancelButton'); await settled(page);
-          const logs = await page.evaluate(async () => {
-            const { setLanguage, t } = await import('/playground/i18n.js');
-            const nodes = [...document.querySelectorAll('#eventLog li')], times = nodes.map(node => node.querySelector('time')?.textContent);
-            setLanguage('en');
-            const names = nodes.map(node => node.querySelector('.event-name')?.textContent);
-            return { retained: nodes.every(node => node.isConnected), sameTimes: nodes.every((node, i) => node.querySelector('time')?.textContent === times[i]), text: nodes.map(node => node.textContent), names, expectedNames: ['start', 'pause', 'cancel'].map(name => t(`lab.event.${name}`)) };
-          });
-          assert.ok(logs.retained && logs.sameTimes); assert.ok(logs.text.length >= 3); assert.ok(logs.expectedNames.every(name => logs.names.includes(name)));
-          assert.ok(logs.text.every(text => !/[\u3400-\u9fff]/.test(text)), 'Historical event content has no stale Chinese');
+          assert.equal(await page.locator('#eventLog, #clearLog, .event-panel, [data-i18n="ui.stunt.disclaimer"]').count(), 0);
+          await change(page, 'en');
           await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: () => Promise.reject(new DOMException('Blocked by test', 'NotAllowedError')) } }));
           await click(page, '#copyButton'); await page.waitForFunction(() => document.querySelector('#copyStatus').textContent.includes('blocked'));
           await change(page, 'zh');
           const clipboard = await page.evaluate(async () => { const { t } = await import('/playground/i18n.js'); return { actual: document.querySelector('#copyStatus').textContent, expected: t('lab.copy.denied') }; });
           assert.equal(clipboard.actual, clipboard.expected);
-          evidence[engine].feedback = { validation, logs, clipboard }; await save();
+          evidence[engine].feedback = { validation, clipboard, publicDiagnosticLogs: false }; await save();
         } finally { await context.close(); }
       });
 

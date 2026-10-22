@@ -182,7 +182,7 @@ test('real browser lifecycle, rendering, accessibility and responsive checks', {
         await page.waitForTimeout(120); // Settle scrolling before testing default layout:'cancel'.
         await page.locator('#playButton').click();
         await page.waitForTimeout(200);
-        assert.ok(await page.locator('[data-tflip-overlay]').count() > 0, await page.locator('#eventLog').innerText());
+        assert.ok(await page.locator('[data-tflip-overlay]').count() > 0, 'The motion overlay should be visible during playback');
         await page.screenshot({ path: `${root}/test-results/tflip-regression/${engine}-flight.png` });
         await page.locator('#cancelButton').click();
         await page.waitForTimeout(30);

@@ -94,7 +94,7 @@ async function contrastSamples(page) {
     };
     const luminance = color => color.slice(0, 3).map(v => { v /= 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
     const ratio = (a, b) => { const x = luminance(a), y = luminance(b); return (Math.max(x, y) + .05) / (Math.min(x, y) + .05); };
-    const selectors = ['.site-header nav a', '.roadster-subtitle', '#stuntStatus', '#stuntMotionNote', '.demo-description', '.demo-status', '#settingsTitle', 'label[for="height"]', '.business-note', '.field-grid label', '.integration-copy p', '#codePreview', '#copyStatus', '.site-footer', 'label[for="themeSelect"]', '#themeSelect', '#languageSelect'];
+    const selectors = ['.site-header nav a', '.roadster-subtitle', '#stuntStatus', '#stuntMotionNote', '.demo-description', '.demo-status', '#settingsTitle', 'label[for="height"]', '.npm-install-note', '.field-grid label', '.integration-copy p', '#codePreview', '#copyStatus', '.site-footer', 'label[for="themeSelect"]', '#themeSelect', '#languageSelect'];
     const text = selectors.map(selector => {
       const node = document.querySelector(selector), style = getComputedStyle(node), bg = background(node), fg = over(rgba(style.color), bg);
       const large = parseFloat(style.fontSize) >= 24 || (parseFloat(style.fontSize) >= 18.66 && parseInt(style.fontWeight, 10) >= 700);
