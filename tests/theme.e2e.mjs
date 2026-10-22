@@ -68,7 +68,7 @@ async function assertTheme(page, theme, mode = 'auto') {
 
 async function surfaces(page) {
   return page.evaluate(() => {
-    const selectors = ['html', '.site-header', '.roadster-feature', '.roadster-controls', '.demo-card', '.demo-info', '#lab', '#stage', '.settings-panel', '.transport-panel', '.event-panel', '.code-panel', '.code-topbar', '.site-footer'];
+    const selectors = ['html', '.site-header', '.roadster-feature', '.roadster-controls', '.demo-card', '.demo-info', '#lab', '#stage', '.settings-panel', '.transport-panel', '.npm-install-command', '.code-panel', '.code-topbar', '.site-footer'];
     const background = node => {
       for (let current = node; current; current = current.parentElement) {
         const color = getComputedStyle(current).backgroundColor;
