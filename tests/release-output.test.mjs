@@ -28,6 +28,8 @@ async function fixture(t) {
 
 test('a clean staged release removes retired assets and precisely manifests every output file', async t => {
   const root = await fixture(t);
+  const socialImage = await readFile(new URL('../playground/social-card-v1.png', import.meta.url));
+  await writeFile(join(root, 'playground/social-card-v1.png'), socialImage);
   await writeFile(join(root, 'agent/downloads/retired.tgz'), 'old version');
   await syncStaticOutput(root);
   await rm(join(root, 'agent/downloads/retired.tgz'));
@@ -40,6 +42,7 @@ test('a clean staged release removes retired assets and precisely manifests ever
   assert.deepEqual(manifest.assets.map(asset => asset.path).sort(), files);
   assert.ok(files.includes('404.html'));
   assert.ok(files.includes('LICENSE'));
+  assert.deepEqual(await readFile(join(root, 'tailnet-preview/playground/social-card-v1.png')), socialImage, 'Social image survives the production copy unchanged');
   for (const asset of manifest.assets) assert.equal(hash(await readFile(join(root, 'tailnet-preview', asset.path))), asset.sha256);
 });
 

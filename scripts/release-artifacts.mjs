@@ -162,7 +162,7 @@ export async function syncStaticOutput(projectRoot) {
     }
   }
   for (const [directory, accept] of [
-    ['playground', /\.(html|js|css|json)$/],
+    ['playground', /\.(html|js|css|json|png|jpe?g|webp|svg)$/],
     ['dist', /\.js$/],
     ['agent', /\.(md|json|js|css|html|ts|tgz|zip)$/],
   ]) {
