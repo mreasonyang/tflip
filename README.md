@@ -1,5 +1,7 @@
 # Tflip
 
+[English](README.en.md) | [简体中文](README.md)
+
 框架无关的翻滚、起跳与落地动效。以 TypeScript 编写，提供纯轨迹计算、CSS 3D 呈现、可选 Canvas 粒子和 React 薄适配。
 
 当前版本为 **0.3.2**，项目目录为 `tflip/`。在线演示：https://tflip.kyun.si 。命名与升级说明见 [Tflip 全面命名统一](docs/TFLIP_UPDATE.md)。
